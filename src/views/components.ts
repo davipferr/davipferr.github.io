@@ -57,7 +57,7 @@ export function projectCard(p: Project) {
         <div class="card-meta">${categoryBadge(p)}<span>${esc(formatDate(p.date))}</span></div>
         <h3>${esc(p.title)}</h3>
         <p>${esc(tr(p.tagline))}</p>
-        <ul class="tags">${p.tags.slice(0, 5).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+        <ul class="tags">${p.tags.slice(0, 3).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
       </div>
     </a>
   </article>`;
