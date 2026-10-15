@@ -17,7 +17,7 @@ const UI = {
   clearFilters: { en: 'Clear filters', pt: 'Limpar filtros' },
   about: { en: 'About', pt: 'Sobre' },
   contact: { en: 'Contact', pt: 'Contato' },
-  contactText: { en: 'Find me on GitHub, where every project here lives.', pt: 'Me encontre no GitHub, onde todos os projetos daqui estão.' },
+  contactText: { en: 'Want to talk about a project, an idea or an opportunity? Reach out.', pt: 'Quer conversar sobre um projeto, uma ideia ou uma oportunidade? Fale comigo.' },
   liveDemo: { en: 'Live demo', pt: 'Demo ao vivo' },
   source: { en: 'Source code', pt: 'Código-fonte' },
   back: { en: 'All projects', pt: 'Todos os projetos' },

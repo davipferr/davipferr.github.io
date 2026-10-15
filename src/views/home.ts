@@ -59,8 +59,8 @@ export function homeView(filters: Filters, showAllTags: boolean, mode: ViewMode 
       <p>${t('contactText')}</p>
       <div class="hero-actions">
         ${profile.links.github ? `<a class="btn" href="${esc(profile.links.github)}" target="_blank" rel="noopener">${icons.github} github.com/${esc(profile.links.github.split('/').pop()!)}</a>` : ''}
-        ${profile.links.linkedin ? `<a class="btn" href="${esc(profile.links.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>` : ''}
-        ${profile.links.email ? `<a class="btn" href="mailto:${esc(profile.links.email)}">${esc(profile.links.email)}</a>` : ''}
+        ${profile.links.linkedin ? `<a class="btn" href="${esc(profile.links.linkedin)}" target="_blank" rel="noopener">${icons.linkedin} LinkedIn</a>` : ''}
+        ${profile.links.email ? `<a class="btn" href="mailto:${esc(profile.links.email)}">${icons.mail} ${esc(profile.links.email)}</a>` : ''}
       </div>
     </section>`;
 }
