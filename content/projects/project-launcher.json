@@ -1,0 +1,19 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "project-launcher",
+  "title": "Project Launcher",
+  "tagline": {
+    "en": "A desktop launcher for every local project: git status, editor, one-click start.",
+    "pt": "Um launcher desktop para todos os projetos locais: status do git, editor e start com um clique."
+  },
+  "description": {
+    "en": "An Electron app that walks my projects folder, detects what each project is (npm scripts, cargo, dotnet, Python, Docker Compose, static pages) and starts it with one click.\n\nIt shows branch, ahead/behind and uncommitted files for every repo, streams logs live, detects `localhost` URLs and kills whole process trees on stop, so no orphaned dev server keeps a port busy. The renderer is sandboxed and can only call a small preload API.",
+    "pt": "Um app Electron que percorre minha pasta de projetos, detecta o tipo de cada um (scripts npm, cargo, dotnet, Python, Docker Compose, páginas estáticas) e inicia com um clique.\n\nMostra branch, ahead/behind e arquivos não commitados de cada repositório, transmite os logs ao vivo, detecta URLs `localhost` e encerra a árvore inteira de processos ao parar, para nenhum servidor de dev órfão ficar segurando uma porta. O renderer roda em sandbox e só acessa uma API pequena do preload."
+  },
+  "category": "desktop",
+  "tags": ["electron", "node", "javascript", "git"],
+  "repoUrl": "https://github.com/davipferr/project-launcher",
+  "featured": true,
+  "date": "2026-10-09",
+  "status": "active"
+}

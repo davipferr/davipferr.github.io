@@ -1,0 +1,18 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "query-it",
+  "title": "QueryIt",
+  "tagline": {
+    "en": "A browser notebook for exploring databases with SQL and JavaScript cells.",
+    "pt": "Um notebook no navegador para explorar bancos de dados com células SQL e JavaScript."
+  },
+  "description": {
+    "en": "Write SQL in one cell, then use its results in a JavaScript cell to analyze the data or draw a chart. Works with PostgreSQL and MySQL.",
+    "pt": "Escreva SQL em uma célula e use o resultado em uma célula JavaScript para analisar os dados ou desenhar um gráfico. Funciona com PostgreSQL e MySQL."
+  },
+  "category": "tools",
+  "tags": ["javascript", "node", "sql", "postgresql", "mysql"],
+  "repoUrl": "https://github.com/davipferr/query-it",
+  "date": "2026-08-25",
+  "status": "active"
+}

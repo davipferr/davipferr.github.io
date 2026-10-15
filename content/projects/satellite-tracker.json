@@ -1,0 +1,19 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "satellite-tracker",
+  "title": "Satellite Tracker",
+  "tagline": {
+    "en": "Real-time 3D satellite tracking from CelesTrak orbital data.",
+    "pt": "Rastreamento de satélites em 3D, em tempo real, com dados orbitais do CelesTrak."
+  },
+  "description": {
+    "en": "A real-time satellite tracker built from first principles. Live orbital elements come from CelesTrak; satellite.js is used only for SGP4 propagation, and the rest is hand-written and unit-tested against it.",
+    "pt": "Um rastreador de satélites em tempo real feito desde o princípio. Os elementos orbitais vêm ao vivo do CelesTrak; o satellite.js é usado só para a propagação SGP4, e o resto é escrito à mão e testado contra ele."
+  },
+  "category": "3d",
+  "tags": ["typescript", "threejs", "vite", "geo", "orbital-mechanics"],
+  "repoUrl": "https://github.com/davipferr/satellite-tracker",
+  "liveUrl": "https://davipferr.github.io/satellite-tracker/",
+  "date": "2026-10-10",
+  "status": "finished"
+}

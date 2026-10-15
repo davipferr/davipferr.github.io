@@ -1,0 +1,19 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "real-ocean",
+  "title": "Real Ocean",
+  "tagline": {
+    "en": "The sea at a real beach, right now, from live wave and weather data.",
+    "pt": "O mar de uma praia real, agora, a partir de dados ao vivo de ondas e clima."
+  },
+  "description": {
+    "en": "Wave, tide and weather data from Open-Meteo become a 3D sea: the real swell from the right direction with the right period, the tide moving the waterline up and down the sand, and the sky, sun, moon, clouds, rain and fog of that place and hour.\n\nNo backend: every API is free and keyless.",
+    "pt": "Dados de ondas, maré e clima do Open-Meteo viram um mar 3D: o swell real, na direção e no período certos, a maré movendo a linha d’água na areia, e o céu, sol, lua, nuvens, chuva e neblina daquele lugar e hora.\n\nSem backend: todas as APIs são gratuitas e sem chave."
+  },
+  "category": "3d",
+  "tags": ["typescript", "threejs", "vite", "live-data", "shaders"],
+  "repoUrl": "https://github.com/davipferr/real-ocean",
+  "liveUrl": "https://davipferr.github.io/real-ocean/",
+  "date": "2026-10-10",
+  "status": "finished"
+}

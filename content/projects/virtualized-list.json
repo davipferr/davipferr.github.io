@@ -1,0 +1,18 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "virtualized-list",
+  "title": "Virtualized List",
+  "tagline": {
+    "en": "A framework-free virtualization engine for 1,000,000 variable-height rows.",
+    "pt": "Um motor de virtualização sem framework para 1.000.000 de linhas de altura variável."
+  },
+  "description": {
+    "en": "A TypeScript virtualization engine built on a Fenwick tree of row sizes, a ~50-line React hook around it, a Vite demo, and a Playwright suite that proves correctness at one million rows and benchmarks it against TanStack Virtual.",
+    "pt": "Um motor de virtualização em TypeScript construído sobre uma árvore de Fenwick com as alturas das linhas, um hook React de ~50 linhas em volta dele, uma demo em Vite e uma suíte Playwright que prova a corretude com um milhão de linhas e compara o desempenho com o TanStack Virtual."
+  },
+  "category": "tools",
+  "tags": ["typescript", "react", "performance", "playwright"],
+  "repoUrl": "https://github.com/davipferr/virtualized-list",
+  "date": "2026-10-10",
+  "status": "finished"
+}

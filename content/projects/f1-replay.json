@@ -1,0 +1,20 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "f1-replay",
+  "title": "F1 Replay",
+  "tagline": {
+    "en": "Replay real Formula 1 races in 3D from OpenF1 data.",
+    "pt": "Reveja corridas reais de Fórmula 1 em 3D com dados do OpenF1."
+  },
+  "description": {
+    "en": "Replays real Formula 1 sessions in 3D using OpenF1 (free, no key). Every car's real position about four times per second, plus timing, tyres, pit stops, flags, weather and telemetry.\n\nTypeScript + Vite + Three.js, running entirely in the browser.",
+    "pt": "Reproduz sessões reais de Fórmula 1 em 3D usando o OpenF1 (gratuito, sem chave). A posição real de cada carro cerca de quatro vezes por segundo, além de tempos, pneus, pit stops, bandeiras, clima e telemetria.\n\nTypeScript + Vite + Three.js, rodando inteiramente no navegador."
+  },
+  "category": "3d",
+  "tags": ["typescript", "threejs", "vite", "live-data", "sports"],
+  "repoUrl": "https://github.com/davipferr/f1-replay",
+  "liveUrl": "https://davipferr.github.io/f1-replay/",
+  "featured": true,
+  "date": "2026-10-10",
+  "status": "finished"
+}

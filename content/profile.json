@@ -1,0 +1,18 @@
+{
+  "name": "Davi Pinto Ferreira",
+  "role": {
+    "en": "Software developer",
+    "pt": "Desenvolvedor de software"
+  },
+  "intro": {
+    "en": "I build interactive 3D experiments on real data, developer tools and web apps. Every project here came out of my own workflow, and this page grows as I ship new ones.",
+    "pt": "Crio experimentos 3D interativos com dados reais, ferramentas para desenvolvedores e aplicações web. Cada projeto aqui saiu do meu próprio fluxo de trabalho, e esta página cresce conforme eu publico novos."
+  },
+  "about": {
+    "en": "I like learning by building things from first principles: an orbit propagator, a virtualization engine, a process manager. Most of my recent work is TypeScript + Three.js on top of free public APIs, so everything runs in the browser with no backend.\n\nThis portfolio is wired to Project Launcher, my desktop app for running local projects: one click there writes a project entry here and publishes it.",
+    "pt": "Gosto de aprender construindo as coisas desde o princípio: um propagador de órbitas, um motor de virtualização, um gerenciador de processos. A maior parte do meu trabalho recente é TypeScript + Three.js sobre APIs públicas gratuitas, então tudo roda no navegador, sem backend.\n\nEste portfólio é ligado ao Project Launcher, meu app desktop para rodar projetos locais: um clique lá cria a entrada do projeto aqui e publica."
+  },
+  "links": {
+    "github": "https://github.com/davipferr"
+  }
+}

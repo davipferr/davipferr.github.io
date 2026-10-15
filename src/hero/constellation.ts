@@ -1,0 +1,313 @@
+// The hero scene: every project is a glowing star, clustered by category and
+// linked to related projects. Built entirely from content/projects, so a new
+// project from Project Launcher shows up here with no code change.
+import * as THREE from 'three';
+import type { Category, Project } from '../data/types';
+import { layoutConstellation, type Layout } from './layout';
+
+export interface ConstellationOptions {
+  onSelect: (p: Project) => void;
+  tooltip: (p: Project) => string;
+  categoryLabel: (c: Category) => string;
+}
+
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function glowTexture() {
+  const size = 128;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.16, 'rgba(255,255,255,0.95)');
+  grad.addColorStop(0.32, 'rgba(255,255,255,0.3)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+export class Constellation {
+  private renderer: THREE.WebGLRenderer;
+  private scene = new THREE.Scene();
+  private camera = new THREE.PerspectiveCamera(50, 1, 0.1, 400);
+  private sky = new THREE.Group();
+  private sprites: THREE.Sprite[] = [];
+  private layout: Layout;
+  private raycaster = new THREE.Raycaster();
+  private pointer = new THREE.Vector2(9, 9); // off-screen until the mouse moves
+  private parallax = new THREE.Vector2();
+  private hovered: number | null = null;
+  private labels: HTMLElement[] = [];
+  private tooltipEl: HTMLElement;
+  private overlay: HTMLElement;
+  private running = false;
+  private visible = true;
+  private raf = 0;
+  private clock = new THREE.Clock();
+  private elapsed = 0;
+  private spin = 0;
+  private drag: { x: number; y: number; moved: boolean; spin: number; tilt: number } | null = null;
+  private tilt = 0.18;
+  /** World size of a star, scaled with camera distance so stars look the same size on any screen. */
+  private starScale = 1;
+  private cleanup: (() => void)[] = [];
+
+  /** Throws if WebGL is unavailable; the caller shows the fallback. */
+  constructor(private container: HTMLElement, projects: Project[], private opts: ConstellationOptions) {
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    this.renderer.domElement.setAttribute('aria-hidden', 'true');
+    container.append(this.renderer.domElement);
+
+    this.overlay = document.createElement('div');
+    this.overlay.className = 'sky-overlay';
+    this.tooltipEl = document.createElement('div');
+    this.tooltipEl.className = 'sky-tooltip';
+    this.overlay.append(this.tooltipEl);
+    container.append(this.overlay);
+
+    this.layout = layoutConstellation(projects);
+    this.scene.add(this.sky);
+    this.buildStars();
+    this.buildBackground();
+    this.buildLabels();
+    this.bindEvents();
+    this.resize();
+  }
+
+  private buildStars() {
+    const tex = glowTexture();
+    for (const node of this.layout.nodes) {
+      const mat = new THREE.SpriteMaterial({
+        map: tex,
+        color: node.color,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        transparent: true,
+      });
+      const s = new THREE.Sprite(mat);
+      s.position.set(...node.position);
+      s.userData.base = node.size;
+      s.userData.phase = (node.position[0] * 13.7 + node.position[2] * 7.1) % (Math.PI * 2);
+      this.sprites.push(s);
+      this.sky.add(s);
+    }
+
+    const pos: number[] = [];
+    const col: number[] = [];
+    const ca = new THREE.Color(), cb = new THREE.Color();
+    for (const [i, j] of this.layout.edges) {
+      const a = this.layout.nodes[i], b = this.layout.nodes[j];
+      pos.push(...a.position, ...b.position);
+      ca.set(a.color);
+      cb.set(b.color);
+      col.push(ca.r, ca.g, ca.b, cb.r, cb.g, cb.b);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    const lines = new THREE.LineSegments(
+      geo,
+      new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.28, blending: THREE.AdditiveBlending, depthWrite: false }),
+    );
+    this.sky.add(lines);
+  }
+
+  private buildBackground() {
+    const n = 1400;
+    const pos = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      const u = Math.random() * 2 - 1, phi = Math.random() * Math.PI * 2, r = 60 + Math.random() * 80;
+      const s = Math.sqrt(1 - u * u);
+      pos.set([r * s * Math.cos(phi), r * u, r * s * Math.sin(phi)], i * 3);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const dust = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0x8090b0, size: 0.35, transparent: true, opacity: 0.55, depthWrite: false }));
+    this.scene.add(dust);
+  }
+
+  private buildLabels() {
+    for (const c of this.layout.clusters) {
+      const el = document.createElement('div');
+      el.className = 'sky-label';
+      el.dataset.category = c.category;
+      this.labels.push(el);
+      this.overlay.append(el);
+    }
+    this.refreshText();
+  }
+
+  /** Re-render texts after a language switch. */
+  refreshText() {
+    this.layout.clusters.forEach((c, i) => (this.labels[i].textContent = this.opts.categoryLabel(c.category)));
+    if (this.hovered !== null) this.tooltipEl.innerHTML = this.opts.tooltip(this.layout.nodes[this.hovered].project);
+  }
+
+  private bindEvents() {
+    const canvas = this.renderer.domElement;
+    const on = <K extends keyof DocumentEventMap>(el: HTMLElement | Window | Document, type: K, fn: (e: DocumentEventMap[K]) => void) => {
+      el.addEventListener(type, fn as EventListener);
+      this.cleanup.push(() => el.removeEventListener(type, fn as EventListener));
+    };
+
+    const setPointer = (e: PointerEvent) => {
+      const r = canvas.getBoundingClientRect();
+      this.pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      this.parallax.copy(this.pointer);
+    };
+
+    on(canvas, 'pointermove', (e) => {
+      setPointer(e);
+      if (this.drag) {
+        const dx = e.clientX - this.drag.x, dy = e.clientY - this.drag.y;
+        if (Math.hypot(dx, dy) > 5) this.drag.moved = true;
+        this.spin = this.drag.spin + dx * 0.005;
+        this.tilt = THREE.MathUtils.clamp(this.drag.tilt + dy * 0.003, -0.6, 0.8);
+      }
+    });
+    on(canvas, 'pointerdown', (e) => {
+      setPointer(e);
+      this.drag = { x: e.clientX, y: e.clientY, moved: false, spin: this.spin, tilt: this.tilt };
+      canvas.setPointerCapture(e.pointerId);
+    });
+    on(canvas, 'pointerup', (e) => {
+      setPointer(e);
+      const wasDrag = this.drag?.moved;
+      this.drag = null;
+      if (wasDrag) return;
+      const hit = this.pick();
+      if (hit !== null) this.opts.onSelect(this.layout.nodes[hit].project);
+    });
+    on(canvas, 'pointerleave', () => {
+      this.pointer.set(9, 9);
+      this.parallax.set(0, 0);
+    });
+
+    on(window, 'resize', () => this.resize());
+    on(document, 'visibilitychange', () => this.updateLoop());
+    const io = new IntersectionObserver(([entry]) => {
+      this.visible = entry.isIntersecting;
+      this.updateLoop();
+    });
+    io.observe(this.container);
+    this.cleanup.push(() => io.disconnect());
+  }
+
+  private pick(): number | null {
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const hits = this.raycaster.intersectObjects(this.sprites, false);
+    return hits.length ? this.sprites.indexOf(hits[0].object as THREE.Sprite) : null;
+  }
+
+  resize() {
+    const w = this.container.clientWidth, h = this.container.clientHeight;
+    if (!w || !h) return;
+    this.renderer.setSize(w, h, false);
+    this.camera.aspect = w / h;
+    // On wide screens the intro text covers the left side, so the sky gets
+    // the right ~55% of the canvas: fit it to that strip and shift it over.
+    const wide = w > 900;
+    const skyW = wide ? w * 0.55 : w;
+    const vfov = THREE.MathUtils.degToRad(this.camera.fov);
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * (skyW / h));
+    const distance = this.layout.extent / Math.sin(Math.min(vfov, hfov) / 2);
+    this.camera.position.set(0, 0, distance);
+    this.starScale = distance * 0.06 * (h / Math.max(h, 700));
+    if (wide) this.camera.setViewOffset(w, h, -(w - skyW) / 2, 0, w, h);
+    else this.camera.clearViewOffset();
+    this.camera.updateProjectionMatrix();
+    if (!this.running) this.render();
+  }
+
+  start() {
+    this.running = true;
+    this.updateLoop();
+  }
+
+  stop() {
+    this.running = false;
+    this.updateLoop();
+  }
+
+  private updateLoop() {
+    const go = this.running && this.visible && !document.hidden;
+    if (go && !this.raf) {
+      this.clock.getDelta();
+      const tick = () => {
+        this.raf = requestAnimationFrame(tick);
+        this.frame(Math.min(this.clock.getDelta(), 0.1));
+      };
+      tick();
+    } else if (!go && this.raf) {
+      cancelAnimationFrame(this.raf);
+      this.raf = 0;
+    }
+  }
+
+  private frame(dt: number) {
+    const still = reducedMotion();
+    this.elapsed += dt;
+    if (!still && !this.drag) this.spin += dt * 0.04;
+
+    this.sky.rotation.set(this.tilt + this.parallax.y * -0.08, this.spin + this.parallax.x * 0.15, 0);
+
+    const hit = this.drag?.moved ? null : this.pick();
+    if (hit !== this.hovered) {
+      this.hovered = hit;
+      this.renderer.domElement.style.cursor = hit === null ? '' : 'pointer';
+      this.tooltipEl.classList.toggle('show', hit !== null);
+      if (hit !== null) this.tooltipEl.innerHTML = this.opts.tooltip(this.layout.nodes[hit].project);
+    }
+
+    this.sprites.forEach((s, i) => {
+      // fade in one by one on first load
+      const appear = still ? 1 : THREE.MathUtils.smoothstep(this.elapsed, i * 0.08, i * 0.08 + 0.8);
+      const pulse = still ? 1 : 1 + Math.sin(this.elapsed * 1.6 + s.userData.phase) * 0.08;
+      const focus = i === this.hovered ? 1.45 : 1;
+      s.scale.setScalar(this.starScale * s.userData.base * appear * pulse * focus);
+      (s.material as THREE.SpriteMaterial).opacity = this.hovered === null || i === this.hovered ? 1 : 0.45;
+    });
+
+    this.render();
+  }
+
+  private render() {
+    this.renderer.render(this.scene, this.camera);
+    this.sky.updateMatrixWorld();
+    const w = this.container.clientWidth, h = this.container.clientHeight;
+    const v = new THREE.Vector3();
+    const toScreen = (p: THREE.Vector3) => {
+      v.copy(p).applyMatrix4(this.sky.matrixWorld).project(this.camera);
+      return { x: (v.x + 1) / 2 * w, y: (1 - v.y) / 2 * h, front: v.z < 1 };
+    };
+    this.layout.clusters.forEach((c, i) => {
+      const s = toScreen(new THREE.Vector3(...c.label));
+      this.labels[i].style.transform = `translate(${s.x}px, ${s.y}px) translate(-50%, -100%)`;
+    });
+    if (this.hovered !== null) {
+      const s = toScreen(this.sprites[this.hovered].position);
+      const left = s.x > w * 0.65;
+      this.tooltipEl.style.transform = `translate(${s.x}px, ${s.y}px) translate(${left ? 'calc(-100% - 18px)' : '18px'}, -50%)`;
+    }
+  }
+
+  dispose() {
+    this.stop();
+    this.cleanup.forEach((f) => f());
+    this.scene.traverse((o) => {
+      if (o instanceof THREE.Mesh || o instanceof THREE.Points || o instanceof THREE.LineSegments || o instanceof THREE.Sprite) {
+        o.geometry.dispose();
+        const m = o.material as THREE.Material & { map?: THREE.Texture };
+        m.map?.dispose();
+        m.dispose();
+      }
+    });
+    this.renderer.dispose();
+    this.container.replaceChildren();
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://davipferr.github.io/project.schema.json",
+  "title": "Portfolio project",
+  "description": "One file per project in content/projects/<slug>.json. Written by hand or by Project Launcher; checked by `npm run validate` before every build.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "title", "tagline", "description", "category", "tags", "date"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "slug": {
+      "description": "URL id, must match the file name. Lowercase words joined by dashes.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": { "description": "Display name (not translated).", "type": "string", "minLength": 1, "maxLength": 60 },
+    "tagline": { "description": "One line shown on cards and in the 3D hero.", "$ref": "#/definitions/text" },
+    "description": { "description": "Longer text for the project page. Blank lines separate paragraphs; `code` is allowed.", "$ref": "#/definitions/text" },
+    "category": { "enum": ["3d", "web", "desktop", "data", "tools", "backend", "other"] },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.+#-]*$" },
+      "uniqueItems": true,
+      "maxItems": 12
+    },
+    "repoUrl": { "type": "string", "pattern": "^https://" },
+    "liveUrl": { "type": "string", "pattern": "^https://" },
+    "cover": { "description": "Path inside public/, e.g. projects/<slug>/cover.webp", "$ref": "#/definitions/image" },
+    "images": { "type": "array", "items": { "$ref": "#/definitions/image" }, "maxItems": 12 },
+    "featured": { "type": "boolean" },
+    "date": { "description": "When the project started (YYYY-MM-DD).", "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "status": { "enum": ["active", "finished", "archived"] }
+  },
+  "definitions": {
+    "text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en", "pt"],
+      "properties": {
+        "en": { "type": "string", "minLength": 1 },
+        "pt": { "type": "string", "minLength": 1 }
+      }
+    },
+    "image": { "type": "string", "pattern": "^projects/[a-z0-9-]+/[^/]+\\.(webp|png|jpe?g|avif|gif)$" }
+  }
+}
