@@ -49,8 +49,8 @@ export function categoryBadge(p: Project) {
   return `<span class="badge" style="--c:${CATEGORY_COLORS[p.category]}">${esc(categoryLabel(p.category))}</span>`;
 }
 
-export function projectCard(p: Project, big = false) {
-  return `<article class="card${big ? ' card-big' : ''}" style="--c:${CATEGORY_COLORS[p.category]}">
+export function projectCard(p: Project) {
+  return `<article class="card" style="--c:${CATEGORY_COLORS[p.category]}">
     <a class="card-link" href="${projectHref(p)}" aria-label="${esc(p.title)}">
       <div class="card-cover">${cover(p)}</div>
       <div class="card-body">

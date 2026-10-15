@@ -24,13 +24,7 @@ export function heroText() {
 }
 
 export function homeView(filters: Filters, showAllTags: boolean) {
-  const featured = projects.filter((p) => p.featured);
   return `
-    ${featured.length ? `<section class="section" aria-labelledby="featured-h">
-      <h2 id="featured-h">${t('featured')}</h2>
-      <div class="grid grid-featured">${featured.map((p) => projectCard(p, true)).join('')}</div>
-    </section>` : ''}
-
     <section class="section" id="projects" aria-labelledby="projects-h">
       <h2 id="projects-h">${t('allProjects')}</h2>
       ${filtersBar(filters, showAllTags)}

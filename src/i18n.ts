@@ -7,7 +7,6 @@ const UI = {
   heroHint: { en: 'Each star is a project. Hover to look, click to open.', pt: 'Cada estrela é um projeto. Passe o mouse para ver, clique para abrir.' },
   heroHintTouch: { en: 'Each star is a project. Tap one to open it.', pt: 'Cada estrela é um projeto. Toque em uma para abrir.' },
   seeProjects: { en: 'See projects', pt: 'Ver projetos' },
-  featured: { en: 'Featured', pt: 'Destaques' },
   allProjects: { en: 'All projects', pt: 'Todos os projetos' },
   all: { en: 'All', pt: 'Todos' },
   searchTags: { en: 'Filter by tag…', pt: 'Filtrar por tag…' },

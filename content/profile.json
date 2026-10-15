@@ -9,8 +9,8 @@
     "pt": "Crio experimentos 3D interativos com dados reais, ferramentas para desenvolvedores e aplicações web. Cada projeto aqui saiu do meu próprio fluxo de trabalho, e esta página cresce conforme eu publico novos."
   },
   "about": {
-    "en": "I like learning by building things from first principles: an orbit propagator, a virtualization engine, a process manager. Most of my recent work is TypeScript + Three.js on top of free public APIs, so everything runs in the browser with no backend.\n\nThis portfolio is wired to Project Launcher, my desktop app for running local projects: one click there writes a project entry here and publishes it.",
-    "pt": "Gosto de aprender construindo as coisas desde o princípio: um propagador de órbitas, um motor de virtualização, um gerenciador de processos. A maior parte do meu trabalho recente é TypeScript + Three.js sobre APIs públicas gratuitas, então tudo roda no navegador, sem backend.\n\nEste portfólio é ligado ao Project Launcher, meu app desktop para rodar projetos locais: um clique lá cria a entrada do projeto aqui e publica."
+    "en": "I'm passionate about technology and driven by curiosity. I enjoy exploring new ideas, experimenting with concepts and building projects that challenge me to learn, discover new possibilities and better understand how things work.\n\nThis portfolio is wired to Project Launcher, my desktop app for running local projects: one click there creates the project entry here and publishes it.",
+    "pt": "Sou apaixonado por tecnologia e movido pela curiosidade. Gosto de explorar novas ideias, experimentar conceitos e criar projetos que me desafiem a aprender, descobrir novas possibilidades e entender melhor como as coisas funcionam.\n\nEste portfólio é ligado ao Project Launcher, meu app desktop para rodar projetos locais: um clique lá cria a entrada do projeto aqui e publica."
   },
   "links": {
     "github": "https://github.com/davipferr"
