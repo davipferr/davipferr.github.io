@@ -2,6 +2,7 @@
 // means adding a file; no code here changes.
 import { CATEGORIES, type Category, type Profile, type Project } from './types';
 import profileJson from '../../content/profile.json';
+import { assignZodiac } from './zodiac';
 
 const modules = import.meta.glob<Project>('../../content/projects/*.json', { eager: true, import: 'default' });
 
@@ -17,6 +18,8 @@ export function sortProjects(list: Project[]): Project[] {
 
 export const projects: Project[] = sortProjects(Object.values(modules));
 export const profile = profileJson as Profile;
+/** Which projects sit on a zodiac constellation star. */
+export const zodiac = assignZodiac(projects);
 
 export const bySlug = (slug: string) => projects.find((p) => p.slug === slug);
 

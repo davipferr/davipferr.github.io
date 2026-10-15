@@ -11,6 +11,7 @@
     "pt": "Terremotos ao vivo do feed do USGS em uma Terra 3D. Eles aparecem no epicentro ou, no modo raio-X, na profundidade real dentro de um planeta translúcido, e cada um emite uma onda de choque quando a linha do tempo passa por ele.\n\nFeito com TypeScript, Vite e Three.js, sem outras dependências em tempo de execução."
   },
   "category": "3d",
+  "constellation": "leo",
   "tags": ["typescript", "threejs", "vite", "live-data", "geo"],
   "repoUrl": "https://github.com/davipferr/earthquake-globe",
   "liveUrl": "https://davipferr.github.io/earthquake-globe/",

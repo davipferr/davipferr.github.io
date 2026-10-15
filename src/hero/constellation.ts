@@ -1,14 +1,14 @@
-// The hero scene: every project is a glowing star, clustered by category and
-// linked to related projects. Built entirely from content/projects, so a new
+// The projects sky: every project is a glowing star, clustered by category and
+// linked to related projects, or placed on a zodiac constellation. Built entirely from content/projects, so a new
 // project from Project Launcher shows up here with no code change.
 import * as THREE from 'three';
-import type { Category, Project } from '../data/types';
-import { layoutConstellation, type Layout } from './layout';
+import type { Project } from '../data/types';
+import { layoutConstellation, type Cluster, type Layout } from './layout';
 
 export interface ConstellationOptions {
   onSelect: (p: Project) => void;
   tooltip: (p: Project) => string;
-  categoryLabel: (c: Category) => string;
+  clusterLabel: (c: Cluster) => string;
 }
 
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -36,6 +36,10 @@ export class Constellation {
   private camera = new THREE.PerspectiveCamera(50, 1, 0.1, 400);
   private sky = new THREE.Group();
   private sprites: THREE.Sprite[] = [];
+  /** Free stars of zodiac figures: small, dim, not clickable. */
+  private ghosts: THREE.Sprite[] = [];
+  /** One group per zodiac figure, turned every frame to face the camera. */
+  private figureGroups: THREE.Group[] = [];
   private layout: Layout;
   private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2(9, 9); // off-screen until the mouse moves
@@ -118,6 +122,49 @@ export class Constellation {
       new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.28, blending: THREE.AdditiveBlending, depthWrite: false }),
     ));
     this.sky.add(lines);
+    this.buildFigures(tex);
+  }
+
+  /**
+   * Zodiac figures: solid lines between taken stars, dashed lines to free ones.
+   * Each figure is a group that always faces the camera, so its shape stays
+   * readable however the sky is turned; its project stars move into it.
+   */
+  private buildFigures(tex: THREE.Texture) {
+    const common = { color: 0xc8d6f0, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false };
+    const solidMat = new THREE.LineBasicMaterial({ ...common, opacity: 0.6 });
+    const dashedMat = new THREE.LineDashedMaterial({ ...common, opacity: 0.32, dashSize: 0.25, gapSize: 0.18 });
+    const ghostMat = new THREE.SpriteMaterial({ map: tex, color: 0xaab8d8, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.6 });
+
+    for (const fig of this.layout.figures) {
+      const group = new THREE.Group();
+      group.position.set(...fig.center);
+      this.figureGroups.push(group);
+      this.sky.add(group);
+
+      const solid: number[] = [];
+      const dashed: number[] = [];
+      for (const [a, b] of fig.zodiac.lines) {
+        const taken = fig.occupant[a] >= 0 && fig.occupant[b] >= 0;
+        (taken ? solid : dashed).push(...fig.offsets[a], ...fig.offsets[b]);
+      }
+      for (const [pts, mat] of [[solid, solidMat], [dashed, dashedMat]] as const) {
+        if (!pts.length) continue;
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        const l = new THREE.LineSegments(geo, mat);
+        l.computeLineDistances();
+        group.add(l);
+      }
+
+      fig.offsets.forEach((offset, i) => {
+        const node = fig.occupant[i];
+        const sprite = node >= 0 ? this.sprites[node] : new THREE.Sprite(ghostMat);
+        sprite.position.set(...offset);
+        group.add(sprite);
+        if (node < 0) this.ghosts.push(sprite);
+      });
+    }
   }
 
   private buildBackground() {
@@ -137,8 +184,7 @@ export class Constellation {
   private buildLabels() {
     for (const c of this.layout.clusters) {
       const el = document.createElement('div');
-      el.className = 'sky-label';
-      el.dataset.category = c.category;
+      el.className = `sky-label sky-label-${c.kind}`;
       this.labels.push(el);
       this.overlay.append(el);
     }
@@ -147,7 +193,7 @@ export class Constellation {
 
   /** Re-render texts after a language switch. */
   refreshText() {
-    this.layout.clusters.forEach((c, i) => (this.labels[i].textContent = this.opts.categoryLabel(c.category)));
+    this.layout.clusters.forEach((c, i) => (this.labels[i].textContent = this.opts.clusterLabel(c)));
     if (this.hovered !== null) this.tooltipEl.innerHTML = this.opts.tooltip(this.layout.nodes[this.hovered].project);
   }
 
@@ -214,7 +260,7 @@ export class Constellation {
     this.layout.nodes.forEach((n, i) => match && !match(n.project) && this.dimmed.add(i));
     (this.lines.material as THREE.LineBasicMaterial).opacity = this.dimmed.size ? 0.08 : 0.28;
     this.layout.clusters.forEach((c, i) => {
-      const anyShown = this.layout.nodes.some((n, j) => n.project.category === c.category && !this.dimmed.has(j));
+      const anyShown = c.members.some((j) => !this.dimmed.has(j));
       this.labels[i].style.opacity = anyShown ? '' : '0.25';
     });
     if (!this.running) this.frame(0);
@@ -267,6 +313,10 @@ export class Constellation {
     if (!still && !this.drag) this.spin += dt * 0.04;
 
     this.sky.rotation.set(this.tilt + this.parallax.y * -0.08, this.spin + this.parallax.x * 0.15, 0);
+    // undo the sky's rotation so zodiac figures face the camera (which looks straight down -z)
+    const facing = this.sky.quaternion.clone().invert();
+    for (const g of this.figureGroups) g.quaternion.copy(facing);
+    this.sky.updateMatrixWorld();
 
     const hit = this.drag?.moved ? null : this.pick();
     if (hit !== this.hovered) {
@@ -286,6 +336,8 @@ export class Constellation {
       (s.material as THREE.SpriteMaterial).opacity = dim ? 0.12 : this.hovered === null || i === this.hovered ? 1 : 0.45;
     });
 
+    for (const g of this.ghosts) g.scale.setScalar(this.starScale * 0.45);
+
     this.render();
   }
 
@@ -294,16 +346,21 @@ export class Constellation {
     this.sky.updateMatrixWorld();
     const w = this.container.clientWidth, h = this.container.clientHeight;
     const v = new THREE.Vector3();
-    const toScreen = (p: THREE.Vector3) => {
-      v.copy(p).applyMatrix4(this.sky.matrixWorld).project(this.camera);
+    /** Screen position of a point given in `parent`'s local space. */
+    const toScreen = (p: THREE.Vector3, parent: THREE.Object3D = this.sky) => {
+      v.copy(p).applyMatrix4(parent.matrixWorld).project(this.camera);
       return { x: (v.x + 1) / 2 * w, y: (1 - v.y) / 2 * h, front: v.z < 1 };
     };
     this.layout.clusters.forEach((c, i) => {
-      const s = toScreen(new THREE.Vector3(...c.label));
+      const s =
+        c.figure === undefined
+          ? toScreen(new THREE.Vector3(...c.label))
+          : toScreen(new THREE.Vector3(0, c.label[1] - this.layout.figures[c.figure].center[1], 0), this.figureGroups[c.figure]);
       this.labels[i].style.transform = `translate(${s.x}px, ${s.y}px) translate(-50%, -100%)`;
     });
     if (this.hovered !== null) {
-      const s = toScreen(this.sprites[this.hovered].position);
+      const sprite = this.sprites[this.hovered];
+      const s = toScreen(sprite.position, sprite.parent!);
       const left = s.x > w * 0.65;
       this.tooltipEl.style.transform = `translate(${s.x}px, ${s.y}px) translate(${left ? 'calc(-100% - 18px)' : '18px'}, -50%)`;
     }

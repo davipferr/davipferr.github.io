@@ -33,7 +33,8 @@ By hand:
 
 1. Create `content/projects/<slug>.json`. Add `"$schema": "../project.schema.json"` at the top to get editor autocomplete.
 2. Optional: add `public/projects/<slug>/cover.webp` (16:9) and set `"cover": "projects/<slug>/cover.webp"`. Without a cover, a generated image is used.
-3. Run `npm run validate`, then push to `main`.
+3. Optional: add `"constellation": "leo"` (or any of the 12 zodiac ids in `src/data/zodiac.json`) to put the project on a star of that zodiac figure. In the 3D view the figure is drawn with its free stars dashed, and the project's card image becomes the figure with its own star lit up. Each figure has a fixed number of stars (Leo 9, Cancer 5, …). Featured projects get a star first, then the oldest. Any extra projects are shown by category as usual, and `npm run validate` prints a warning listing them.
+4. Run `npm run validate`, then push to `main`.
 
 The validator checks the schema, that both languages are filled in, that the file name matches the `slug`, that slugs are unique, and that every referenced image exists. It runs before every build, so a broken entry fails CI and never reaches the live site.
 

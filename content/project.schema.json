@@ -28,6 +28,10 @@
     "cover": { "description": "Path inside public/, e.g. projects/<slug>/cover.webp", "$ref": "#/definitions/image" },
     "images": { "type": "array", "items": { "$ref": "#/definitions/image" }, "maxItems": 12 },
     "featured": { "type": "boolean" },
+    "constellation": {
+      "description": "Put the project on a star of this zodiac constellation. Each one has a fixed number of stars (see src/data/zodiac.json); featured and older projects get them first, extra projects are shown by category.",
+      "enum": ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpius", "sagittarius", "capricornus", "aquarius", "pisces"]
+    },
     "date": { "description": "When the project started (YYYY-MM-DD).", "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
     "status": { "enum": ["active", "finished", "archived"] }
   },

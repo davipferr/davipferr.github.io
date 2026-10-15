@@ -19,6 +19,8 @@ export interface Project {
   cover?: string;
   images?: string[];
   featured?: boolean;
+  /** Zodiac constellation id (see src/data/zodiac.json). */
+  constellation?: string;
   date: string;
   status?: 'active' | 'finished' | 'archived';
 }

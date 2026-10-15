@@ -11,6 +11,7 @@
     "pt": "Um rastreador de satélites em tempo real feito desde o princípio. Os elementos orbitais vêm ao vivo do CelesTrak; o satellite.js é usado só para a propagação SGP4, e o resto é escrito à mão e testado contra ele."
   },
   "category": "3d",
+  "constellation": "leo",
   "tags": ["typescript", "threejs", "vite", "geo", "orbital-mechanics"],
   "repoUrl": "https://github.com/davipferr/satellite-tracker",
   "liveUrl": "https://davipferr.github.io/satellite-tracker/",

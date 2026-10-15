@@ -1,5 +1,6 @@
 import type { Project } from '../data/types';
-import { asset } from '../data/projects';
+import { asset, zodiac } from '../data/projects';
+import type { Seat } from '../data/zodiac';
 import { CATEGORY_COLORS, hash, rng } from '../hero/layout';
 import { categoryLabel, formatDate, tr } from '../i18n';
 
@@ -39,10 +40,56 @@ export function coverArt(p: Project) {
   </svg>`;
 }
 
-export function cover(p: Project, eager = false) {
-  return p.cover
-    ? `<img src="${asset(p.cover)}" alt="" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`
-    : coverArt(p);
+/** Art for a project sitting on a zodiac star: the whole figure, with its own star lit up. */
+export function zodiacArt(p: Project, seat: Seat) {
+  const color = CATEGORY_COLORS[p.category];
+  const taken = zodiac.occupants.get(seat.zodiac.id)!.map((o) => o !== null);
+  const at = (i: number) => {
+    const [x, y] = seat.zodiac.stars[i];
+    return [110 + x * 180, 10 + y * 180] as const;
+  };
+  const lines = seat.zodiac.lines
+    .map(([a, b]) => {
+      const [[x1, y1], [x2, y2]] = [at(a), at(b)];
+      const solid = taken[a] && taken[b];
+      return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-opacity="${solid ? 0.5 : 0.22}"${solid ? '' : ' stroke-dasharray="3 3"'}/>`;
+    })
+    .join('');
+  const stars = seat.zodiac.stars
+    .map((_, i) => {
+      if (i === seat.star) return '';
+      const [x, y] = at(i);
+      return taken[i] ? `<circle cx="${x}" cy="${y}" r="2.4" fill-opacity=".85"/>` : `<circle cx="${x}" cy="${y}" r="1.5" fill-opacity=".35"/>`;
+    })
+    .join('');
+  const [sx, sy] = at(seat.star);
+  const r = rng(hash(seat.zodiac.id));
+  const dust = Array.from({ length: 40 }, () => `<circle cx="${r() * 400}" cy="${r() * 200}" r="${0.4 + r() * 0.7}"/>`).join('');
+  const id = `z-${p.slug}`;
+  return `<svg class="cover-art" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><radialGradient id="${id}" cx="${sx / 4}%" cy="${sy / 2}%" r="45%">
+      <stop offset="0" stop-color="${color}" stop-opacity=".35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/>
+    </radialGradient></defs>
+    <rect width="400" height="200" fill="#070a12"/><rect width="400" height="200" fill="url(#${id})"/>
+    <g fill="#8090b0" fill-opacity=".45">${dust}</g>
+    <g stroke="#c8d6f0" stroke-width="1">${lines}</g>
+    <g fill="#dfe7f7">${stars}</g>
+    <circle cx="${sx}" cy="${sy}" r="13" fill="${color}" fill-opacity=".25"/>
+    <circle cx="${sx}" cy="${sy}" r="4.5" fill="${color}"/>
+    <circle cx="${sx}" cy="${sy}" r="2" fill="#fff"/>
+    <text x="18" y="186" fill="#c8d6f0" fill-opacity=".7" font-size="13" letter-spacing="3" font-family="var(--font)">${esc(tr(seat.zodiac.name).toUpperCase())}</text>
+  </svg>`;
+}
+
+/**
+ * Cards show the zodiac figure for projects on a constellation; the project
+ * page prefers a real cover image when there is one.
+ */
+export function cover(p: Project, { eager = false, page = false } = {}) {
+  const seat = zodiac.seats.get(p.slug);
+  const img = p.cover && `<img src="${asset(p.cover)}" alt="" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`;
+  if (seat && !(page && img)) return zodiacArt(p, seat);
+  return img || coverArt(p);
 }
 
 export function categoryBadge(p: Project) {

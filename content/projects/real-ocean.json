@@ -11,6 +11,7 @@
     "pt": "Dados de ondas, maré e clima do Open-Meteo viram um mar 3D: o swell real, na direção e no período certos, a maré movendo a linha d’água na areia, e o céu, sol, lua, nuvens, chuva e neblina daquele lugar e hora.\n\nSem backend: todas as APIs são gratuitas e sem chave."
   },
   "category": "3d",
+  "constellation": "leo",
   "tags": ["typescript", "threejs", "vite", "live-data", "shaders"],
   "repoUrl": "https://github.com/davipferr/real-ocean",
   "liveUrl": "https://davipferr.github.io/real-ocean/",

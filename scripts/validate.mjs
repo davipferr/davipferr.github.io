@@ -17,6 +17,7 @@ export function validateAll(rootDir = root) {
   const dir = path.join(rootDir, 'content', 'projects');
   const errors = [];
   const slugs = new Map();
+  const projects = [];
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
 
   for (const file of files) {
@@ -35,15 +36,35 @@ export function validateAll(rootDir = root) {
     if (`${data.slug}.json` !== file) fail(`slug "${data.slug}" does not match the file name`);
     if (slugs.has(data.slug)) fail(`duplicate slug, also used by ${slugs.get(data.slug)}`);
     slugs.set(data.slug, file);
+    projects.push(data);
     for (const img of [data.cover, ...(data.images ?? [])].filter(Boolean)) {
       if (!fs.existsSync(path.join(rootDir, 'public', img))) fail(`image not found: public/${img}`);
     }
   }
-  return { count: files.length, errors };
+  return { count: files.length, errors, warnings: zodiacOverflow(rootDir, projects) };
+}
+
+/** Constellations with more projects than stars. Same order as assignZodiac() in src/data/zodiac.ts. */
+function zodiacOverflow(rootDir, projects) {
+  const zodiacFile = path.join(rootDir, 'src', 'data', 'zodiac.json');
+  if (!fs.existsSync(zodiacFile)) return [];
+  const { constellations } = JSON.parse(fs.readFileSync(zodiacFile, 'utf8'));
+  const warnings = [];
+  for (const z of constellations) {
+    const members = projects
+      .filter((p) => p.constellation === z.id)
+      .sort((a, b) => Number(!!b.featured) - Number(!!a.featured) || a.date.localeCompare(b.date) || a.slug.localeCompare(b.slug));
+    if (members.length > z.stars.length) {
+      const extra = members.slice(z.stars.length).map((p) => p.slug).join(', ');
+      warnings.push(`${z.id} has ${z.stars.length} stars but ${members.length} projects; shown by category instead: ${extra}`);
+    }
+  }
+  return warnings;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const { count, errors } = validateAll();
+  const { count, errors, warnings } = validateAll();
+  for (const w of warnings) console.warn(`⚠ ${w}`);
   if (errors.length) {
     console.error(`✖ ${errors.length} problem(s) in content/projects:\n  ${errors.join('\n  ')}`);
     process.exit(1);

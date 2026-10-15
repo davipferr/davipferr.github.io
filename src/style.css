@@ -82,6 +82,7 @@ code { font: 0.9em ui-monospace, 'Cascadia Code', Consolas, monospace; backgroun
   position: absolute; left: 0; top: 0; white-space: nowrap;
   font: 500 0.72rem var(--font); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(230, 233, 242, 0.45);
 }
+.sky-label-zodiac { color: rgba(200, 214, 240, 0.7); letter-spacing: 0.18em; }
 .sky-tooltip {
   position: absolute; left: 0; top: 0; max-width: 280px; padding: 10px 14px;
   background: rgba(14, 18, 28, 0.92); border: 1px solid var(--border); border-radius: 10px;

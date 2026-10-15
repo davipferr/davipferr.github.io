@@ -1,4 +1,4 @@
-import { asset, bySlug, projects } from '../data/projects';
+import { asset, bySlug, projects, zodiac } from '../data/projects';
 import { CATEGORY_COLORS } from '../hero/layout';
 import { formatDate, statusLabel, t, tr } from '../i18n';
 import { categoryBadge, cover, esc, icons, projectHref, richText, tagHref } from './components';
@@ -8,6 +8,7 @@ export function projectView(slug: string) {
   if (!p) {
     return `<section class="section narrow"><a class="back" href="#/projects">${icons.arrowLeft} ${t('back')}</a><h1>${t('notFound')}</h1></section>`;
   }
+  const seat = zodiac.seats.get(p.slug);
   const i = projects.indexOf(p);
   const prev = projects[(i - 1 + projects.length) % projects.length];
   const next = projects[(i + 1) % projects.length];
@@ -25,7 +26,7 @@ export function projectView(slug: string) {
         </div>
       </header>
 
-      <div class="project-cover">${cover(p, true)}</div>
+      <div class="project-cover">${cover(p, { eager: true, page: true })}</div>
 
       <div class="project-body">
         <div class="prose">${richText(tr(p.description))}</div>
@@ -33,6 +34,7 @@ export function projectView(slug: string) {
           <dl>
             <dt>${t('started')}</dt><dd>${esc(formatDate(p.date))}</dd>
             ${p.status ? `<dt>${t('status')}</dt><dd>${esc(statusLabel(p.status))}</dd>` : ''}
+            ${seat ? `<dt>${t('constellation')}</dt><dd>${esc(tr(seat.zodiac.name))}</dd>` : ''}
           </dl>
           <ul class="tags">${p.tags.map((tag) => `<li><a href="${tagHref(tag)}">${esc(tag)}</a></li>`).join('')}</ul>
         </aside>

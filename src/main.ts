@@ -2,6 +2,7 @@ import './style.css';
 import type { Category } from './data/types';
 import { profile, projects } from './data/projects';
 import { Constellation } from './hero/constellation';
+import { zodiacById } from './data/zodiac';
 import { categoryLabel, lang, setLang, t, tr } from './i18n';
 import { esc } from './views/components';
 import { filtersBar, grid, heroText, homeView, matches, skyHint, type Filters, type ViewMode } from './views/home';
@@ -65,7 +66,7 @@ function ensureConstellation() {
     constellation = new Constellation(skyCanvas, projects, {
       onSelect: (p) => (location.hash = `#/p/${p.slug}`),
       tooltip: (p) => `<strong>${esc(p.title)}</strong><span>${esc(tr(p.tagline))}</span>`,
-      categoryLabel: (c: Category) => categoryLabel(c),
+      clusterLabel: (c) => (c.kind === 'zodiac' ? tr(zodiacById(c.id)!.name) : categoryLabel(c.id as Category)),
     });
   } catch (err) {
     console.warn('WebGL unavailable, showing project cards only.', err);

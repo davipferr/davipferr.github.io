@@ -11,6 +11,7 @@
     "pt": "Reproduz sessões reais de Fórmula 1 em 3D usando o OpenF1 (gratuito, sem chave). A posição real de cada carro cerca de quatro vezes por segundo, além de tempos, pneus, pit stops, bandeiras, clima e telemetria.\n\nTypeScript + Vite + Three.js, rodando inteiramente no navegador."
   },
   "category": "3d",
+  "constellation": "leo",
   "tags": ["typescript", "threejs", "vite", "live-data", "sports"],
   "repoUrl": "https://github.com/davipferr/f1-replay",
   "liveUrl": "https://davipferr.github.io/f1-replay/",

@@ -25,6 +25,7 @@ const UI = {
   next: { en: 'Next', pt: 'Próximo' },
   started: { en: 'Started', pt: 'Início' },
   status: { en: 'Status', pt: 'Status' },
+  constellation: { en: 'Constellation', pt: 'Constelação' },
   category: { en: 'Category', pt: 'Categoria' },
   notFound: { en: 'Project not found.', pt: 'Projeto não encontrado.' },
   projectsCount: { en: '{n} projects', pt: '{n} projetos' },
