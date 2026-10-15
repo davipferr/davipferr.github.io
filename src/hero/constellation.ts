@@ -54,6 +54,9 @@ export class Constellation {
   private tilt = 0.18;
   /** World size of a star, scaled with camera distance so stars look the same size on any screen. */
   private starScale = 1;
+  /** Stars hidden by the page's filters: faded out and not clickable. */
+  private dimmed = new Set<number>();
+  private lines!: THREE.LineSegments;
   private cleanup: (() => void)[] = [];
 
   /** Throws if WebGL is unavailable; the caller shows the fallback. */
@@ -110,10 +113,10 @@ export class Constellation {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-    const lines = new THREE.LineSegments(
+    const lines = (this.lines = new THREE.LineSegments(
       geo,
       new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.28, blending: THREE.AdditiveBlending, depthWrite: false }),
-    );
+    ));
     this.sky.add(lines);
   }
 
@@ -200,8 +203,21 @@ export class Constellation {
 
   private pick(): number | null {
     this.raycaster.setFromCamera(this.pointer, this.camera);
-    const hits = this.raycaster.intersectObjects(this.sprites, false);
+    const targets = this.sprites.filter((_, i) => !this.dimmed.has(i));
+    const hits = this.raycaster.intersectObjects(targets, false);
     return hits.length ? this.sprites.indexOf(hits[0].object as THREE.Sprite) : null;
+  }
+
+  /** Fade out the projects that don't pass `match` (null shows all). */
+  setFilter(match: ((p: Project) => boolean) | null) {
+    this.dimmed.clear();
+    this.layout.nodes.forEach((n, i) => match && !match(n.project) && this.dimmed.add(i));
+    (this.lines.material as THREE.LineBasicMaterial).opacity = this.dimmed.size ? 0.08 : 0.28;
+    this.layout.clusters.forEach((c, i) => {
+      const anyShown = this.layout.nodes.some((n, j) => n.project.category === c.category && !this.dimmed.has(j));
+      this.labels[i].style.opacity = anyShown ? '' : '0.25';
+    });
+    if (!this.running) this.frame(0);
   }
 
   resize() {
@@ -209,17 +225,13 @@ export class Constellation {
     if (!w || !h) return;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
-    // On wide screens the intro text covers the left side, so the sky gets
-    // the right ~55% of the canvas: fit it to that strip and shift it over.
-    const wide = w > 900;
-    const skyW = wide ? w * 0.55 : w;
+    // Fit the whole sky, using whichever field of view is narrower.
     const vfov = THREE.MathUtils.degToRad(this.camera.fov);
-    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * (skyW / h));
-    const distance = this.layout.extent / Math.sin(Math.min(vfov, hfov) / 2);
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.camera.aspect);
+    // 0.85: the sky is never edge-on in every direction at once, so a slightly closer camera still fits.
+    const distance = (this.layout.extent / Math.sin(Math.min(vfov, hfov) / 2)) * 0.85;
     this.camera.position.set(0, 0, distance);
     this.starScale = distance * 0.06 * (h / Math.max(h, 700));
-    if (wide) this.camera.setViewOffset(w, h, -(w - skyW) / 2, 0, w, h);
-    else this.camera.clearViewOffset();
     this.camera.updateProjectionMatrix();
     if (!this.running) this.render();
   }
@@ -268,9 +280,10 @@ export class Constellation {
       // fade in one by one on first load
       const appear = still ? 1 : THREE.MathUtils.smoothstep(this.elapsed, i * 0.08, i * 0.08 + 0.8);
       const pulse = still ? 1 : 1 + Math.sin(this.elapsed * 1.6 + s.userData.phase) * 0.08;
-      const focus = i === this.hovered ? 1.45 : 1;
+      const dim = this.dimmed.has(i);
+      const focus = i === this.hovered ? 1.45 : dim ? 0.7 : 1;
       s.scale.setScalar(this.starScale * s.userData.base * appear * pulse * focus);
-      (s.material as THREE.SpriteMaterial).opacity = this.hovered === null || i === this.hovered ? 1 : 0.45;
+      (s.material as THREE.SpriteMaterial).opacity = dim ? 0.12 : this.hovered === null || i === this.hovered ? 1 : 0.45;
     });
 
     this.render();

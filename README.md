@@ -21,8 +21,8 @@ content/
 public/projects/<slug>/   cover and screenshots for that project
 ```
 
-- **The 3D hero** (`src/hero/`) draws every project as a star. Stars are grouped by category and linked to related projects: the nearest sibling in the same category, plus any project sharing an uncommon tag. Positions are seeded by slug, so adding a project doesn't reshuffle the others. You can drag to rotate it, hover a star to see the project, and click to open it. The scene pauses when it's off-screen, and it respects `prefers-reduced-motion`. Without WebGL, the hero falls back to a static background.
-- **The rest of the page is plain HTML**: featured projects, the full grid with category and tag filters, About and Contact. Project pages live at `#/p/<slug>`. Routing uses the hash because GitHub Pages has no SPA fallback.
+- **All projects** can be shown as a 3D constellation (the default) or as cards, with a toggle that is remembered per browser. The constellation (`src/hero/`) draws every project as a star. Stars are grouped by category and linked to related projects: the nearest sibling in the same category, plus any project sharing an uncommon tag. Positions are seeded by slug, so adding a project doesn't reshuffle the others. You can drag to rotate it, hover a star to see the project, and click to open it. The category and tag filters fade out the stars that don't match. The scene pauses when it's off-screen or in cards view, and it respects `prefers-reduced-motion`. Without WebGL, only the cards are shown. In constellation view the cards stay in the page for screen readers.
+- **The rest of the page is plain HTML**: intro, About and Contact. Project pages live at `#/p/<slug>`. Routing uses the hash because GitHub Pages has no SPA fallback.
 - **The site is in English and Portuguese.** Every text field is `{ "en": …, "pt": … }`. The language follows the browser and can be switched in the header.
 
 ## Adding a project

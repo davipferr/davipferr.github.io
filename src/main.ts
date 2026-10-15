@@ -4,13 +4,12 @@ import { profile, projects } from './data/projects';
 import { Constellation } from './hero/constellation';
 import { categoryLabel, lang, setLang, t, tr } from './i18n';
 import { esc } from './views/components';
-import { filtersBar, grid, heroText, homeView, type Filters } from './views/home';
+import { filtersBar, grid, heroText, homeView, matches, skyHint, type Filters, type ViewMode } from './views/home';
 import { projectView } from './views/project';
 
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
 const header = $('#site-header');
 const hero = $('#hero');
-const sky = $('#sky');
 const heroCopy = $('#hero-text');
 const view = $('#view');
 const footer = $('#site-footer');
@@ -18,6 +17,24 @@ const footer = $('#site-footer');
 const filters: Filters = { category: 'all', tag: null };
 let showAllTags = false;
 let constellation: Constellation | null = null;
+let webgl = true;
+
+// The constellation lives in the "All projects" section, but that section is
+// re-rendered (filters, language), so its element is created once and moved
+// into each new render instead of rebuilding the WebGL scene.
+const skyView = document.createElement('div');
+skyView.className = 'sky-view';
+skyView.innerHTML = '<div class="sky-canvas"></div><p class="sky-hint"></p>';
+const skyCanvas = skyView.querySelector<HTMLElement>('.sky-canvas')!;
+const skyHintEl = skyView.querySelector<HTMLElement>('.sky-hint')!;
+
+const VIEW_KEY = 'projectsView';
+let viewMode: ViewMode = 'sky';
+try {
+  if (localStorage.getItem(VIEW_KEY) === 'cards') viewMode = 'cards';
+} catch {
+  // storage blocked: default view
+}
 
 // Routes: #/  #/projects?tag=x&cat=y  #/about  #/contact  #/p/<slug>
 function parseRoute() {
@@ -43,17 +60,45 @@ function renderHeader() {
 }
 
 function ensureConstellation() {
-  if (constellation || hero.classList.contains('no-webgl')) return;
+  if (constellation || !webgl) return;
   try {
-    constellation = new Constellation(sky, projects, {
+    constellation = new Constellation(skyCanvas, projects, {
       onSelect: (p) => (location.hash = `#/p/${p.slug}`),
       tooltip: (p) => `<strong>${esc(p.title)}</strong><span>${esc(tr(p.tagline))}</span>`,
       categoryLabel: (c: Category) => categoryLabel(c),
     });
   } catch (err) {
-    console.warn('WebGL unavailable, showing the static hero instead.', err);
-    hero.classList.add('no-webgl');
+    console.warn('WebGL unavailable, showing project cards only.', err);
+    webgl = false;
   }
+}
+
+function renderHome() {
+  ensureConstellation();
+  heroCopy.innerHTML = heroText();
+  view.innerHTML = homeView(filters, showAllTags, constellation ? viewMode : null);
+  const slot = document.getElementById('sky-slot');
+  if (slot) slot.replaceWith(skyView);
+  skyHintEl.textContent = skyHint();
+  constellation?.setFilter(matches(filters));
+  applyViewMode();
+}
+
+/** Show the constellation or the cards; only the visible one does any work. */
+function applyViewMode() {
+  const sky = !!constellation && viewMode === 'sky';
+  view.querySelectorAll<HTMLElement>('[data-view]').forEach((b) => {
+    const on = b.dataset.view === viewMode;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  // In constellation mode the cards stay in the page for screen readers.
+  document.getElementById('project-grid')?.classList.toggle('sr-only', sky);
+  skyView.hidden = !sky;
+  if (sky && !hero.hidden) {
+    constellation!.resize();
+    constellation!.start();
+  } else constellation?.stop();
 }
 
 function render() {
@@ -75,12 +120,8 @@ function render() {
   }
 
   hero.hidden = false;
-  heroCopy.innerHTML = heroText();
-  view.innerHTML = homeView(filters, showAllTags);
+  renderHome();
   document.title = `${profile.name} · ${tr(profile.role)}`;
-  ensureConstellation();
-  constellation?.resize();
-  constellation?.start();
 
   const target = route.section && document.getElementById(route.section);
   requestAnimationFrame(() => (target ? target.scrollIntoView({ behavior: 'smooth' }) : window.scrollTo({ top: 0 })));
@@ -89,11 +130,22 @@ function render() {
 function rerenderFilters() {
   $('#filters').outerHTML = filtersBar(filters, showAllTags);
   $('#project-grid').innerHTML = grid(filters);
+  constellation?.setFilter(matches(filters));
 }
 
 view.addEventListener('click', (e) => {
-  const el = (e.target as HTMLElement).closest<HTMLElement>('[data-cat],[data-tag],[data-more],[data-clear]');
+  const el = (e.target as HTMLElement).closest<HTMLElement>('[data-view],[data-cat],[data-tag],[data-more],[data-clear]');
   if (!el) return;
+  if (el.dataset.view) {
+    viewMode = el.dataset.view as ViewMode;
+    try {
+      localStorage.setItem(VIEW_KEY, viewMode);
+    } catch {
+      // not remembered; fine
+    }
+    applyViewMode();
+    return;
+  }
   if (el.dataset.cat) filters.category = el.dataset.cat as Filters['category'];
   else if (el.dataset.tag) filters.tag = filters.tag === el.dataset.tag ? null : el.dataset.tag;
   else if ('more' in el.dataset) showAllTags = !showAllTags;
@@ -109,10 +161,7 @@ header.addEventListener('click', (e) => {
   const y = window.scrollY;
   const route = parseRoute();
   if (route.name === 'project') view.innerHTML = projectView(route.slug);
-  else {
-    heroCopy.innerHTML = heroText();
-    view.innerHTML = homeView(filters, showAllTags);
-  }
+  else renderHome();
   constellation?.refreshText();
   window.scrollTo({ top: y });
 });

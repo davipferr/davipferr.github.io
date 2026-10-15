@@ -1,4 +1,4 @@
-import type { Category } from '../data/types';
+import type { Category, Project } from '../data/types';
 import { profile, projects, tagCounts, usedCategories } from '../data/projects';
 import { CATEGORY_COLORS } from '../hero/layout';
 import { categoryLabel, t, tr } from '../i18n';
@@ -11,24 +11,42 @@ export interface Filters {
 
 const TAGS_SHOWN = 14;
 
+export type ViewMode = 'sky' | 'cards';
+
 export function heroText() {
-  const touch = matchMedia('(hover: none)').matches;
   return `<p class="eyebrow">${esc(tr(profile.role))}</p>
     <h1>${esc(profile.name)}</h1>
     <p class="lead">${esc(tr(profile.intro))}</p>
     <div class="hero-actions">
       <a class="btn btn-primary" href="#/projects">${t('seeProjects')} ${icons.arrowRight}</a>
       ${profile.links.github ? `<a class="btn" href="${esc(profile.links.github)}" target="_blank" rel="noopener">${icons.github} GitHub</a>` : ''}
-    </div>
-    <p class="hero-hint">${t(touch ? 'heroHintTouch' : 'heroHint')} · ${t('projectsCount', { n: projects.length })}</p>`;
+    </div>`;
 }
 
-export function homeView(filters: Filters, showAllTags: boolean) {
+export const skyHint = () =>
+  `${t(matchMedia('(hover: none)').matches ? 'heroHintTouch' : 'heroHint')} · ${t('projectsCount', { n: projects.length })}`;
+
+function viewToggle(mode: ViewMode) {
+  const btn = (m: ViewMode, label: string, icon: string) =>
+    `<button type="button" class="toggle-btn${mode === m ? ' active' : ''}" aria-pressed="${mode === m}" data-view="${m}">${icon}<span>${label}</span></button>`;
+  return `<div class="view-toggle" role="group" aria-label="${t('viewAs')}">
+    ${btn('sky', t('viewSky'), icons.sky)}
+    ${btn('cards', t('viewCards'), icons.grid)}
+  </div>`;
+}
+
+/** `mode` is null when WebGL is unavailable: cards only, no toggle. */
+export function homeView(filters: Filters, showAllTags: boolean, mode: ViewMode | null) {
+  const sky = mode === 'sky';
   return `
     <section class="section" id="projects" aria-labelledby="projects-h">
-      <h2 id="projects-h">${t('allProjects')}</h2>
+      <div class="section-head">
+        <h2 id="projects-h">${t('allProjects')}</h2>
+        ${mode ? viewToggle(mode) : ''}
+      </div>
       ${filtersBar(filters, showAllTags)}
-      <div class="grid" id="project-grid" aria-live="polite">${grid(filters)}</div>
+      ${mode ? '<div id="sky-slot"></div>' : ''}
+      <div class="grid${sky ? ' sr-only' : ''}" id="project-grid" aria-live="polite">${grid(filters)}</div>
     </section>
 
     <section class="section about" id="about" aria-labelledby="about-h">
@@ -68,8 +86,11 @@ export function filtersBar(f: Filters, showAllTags: boolean) {
   </div>`;
 }
 
+export const matches = (f: Filters) => (p: Project) =>
+  (f.category === 'all' || p.category === f.category) && (!f.tag || p.tags.includes(f.tag));
+
 export function grid(f: Filters) {
-  const list = projects.filter((p) => (f.category === 'all' || p.category === f.category) && (!f.tag || p.tags.includes(f.tag)));
+  const list = projects.filter(matches(f));
   if (!list.length) {
     return `<div class="empty"><p>${t('noResults')}</p><button type="button" class="btn" data-clear>${t('clearFilters')}</button></div>`;
   }
