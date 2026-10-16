@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "personal-destination-explorer",
+  "title": "Destination explorer",
+  "tagline": {
+    "en": "Where should I go, and when?",
+    "pt": "Para onde devo ir, e quando?"
+  },
+  "description": {
+    "en": "Where should I go, and when? A personal travel-planning site for a bucket list of destinations: typical weather month by month, crowds, tropical storms, holidays, exchange rates, price levels, where to stay, travel advisories, dengue season, nonstop flights from home with their punctuality, and an itinerary builder that groups each city's sights into walkable days.\n\nA static data site built with a Python pipeline (httpx + Polars + DuckDB) and Observable Framework (Observable Plot for charts, Leaflet for the itinerary map, DuckDB-WASM for in-browser SQL), the same stack as `public-data-explorer`.",
+    "pt": "Para onde ir e quando? Um site de planejamento de viagens personalizado para uma lista de destinos dos sonhos: condições climáticas mês a mês, nível de lotação, tempestades tropicais, feriados, taxas de câmbio, custos, opções de hospedagem, avisos de viagem, período de incidência de dengue, voos diretos a partir da sua origem (incluindo dados de pontualidade) e uma ferramenta de criação de itinerários que organiza as atrações de cada cidade em roteiros diários que podem ser percorridos a pé.\n\nTrata-se de um site baseado em dados estáticos, desenvolvido com um pipeline em Python (httpx + Polars + DuckDB) e o Observable Framework (utilizando Observable Plot para gráficos, Leaflet para o mapa do itinerário e DuckDB-WASM para execução de consultas SQL diretamente no navegador) — a mesma stack tecnológica empregada no `public-data-explorer`."
+  },
+  "category": "data",
+  "constellation": "libra",
+  "tags": [
+    "javascript",
+    "python",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/personal-destination-explorer",
+  "liveUrl": "https://davipferr.github.io/personal-destination-explorer/",
+  "date": "2026-10-12",
+  "status": "finished"
+}

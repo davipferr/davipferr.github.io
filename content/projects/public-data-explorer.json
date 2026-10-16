@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "public-data-explorer",
+  "title": "Explorador de dados públicos",
+  "tagline": {
+    "en": "A static data site about Brazilian public data — IBGE, Câmara dos Deputados and Portal da Transparência — built with a Python pipeline (Polars + DuckDB) and Observable Framework (Observable Plot for charts, raw D3 only for the treemap, DuckDB-WASM for in-browser SQL).",
+    "pt": "Um site de dados estáticos sobre dados públicos brasileiros — IBGE, Câmara dos Deputados e Portal da Transparência — construído com um pipeline em Python (Polars + DuckDB) e o Observable Framework (Observable Plot para gráficos, D3 puro para o treemap e DuckDB-WASM para execução de SQL no navegador)."
+  },
+  "description": {
+    "en": "A static data site about Brazilian public data — IBGE, Câmara dos Deputados and Portal da Transparência — built with a Python pipeline (Polars + DuckDB) and Observable Framework (Observable Plot for charts, raw D3 only for the treemap, DuckDB-WASM for in-browser SQL).\n\nEvery API call happens at build time in Framework data loaders. The browser only downloads pre-cleaned Parquet/JSON files, so no API key, rate limit or pagination ever reaches visitors.",
+    "pt": "Um site de dados estáticos sobre dados públicos brasileiros — provenientes do IBGE, da Câmara dos Deputados e do Portal da Transparência — desenvolvido com um pipeline em Python (Polars + DuckDB) e o Observable Framework (utilizando Observable Plot para gráficos, D3 puro para o *treemap* e DuckDB-WASM para execução de SQL diretamente no navegador).\n\nTodas as chamadas de API ocorrem durante a etapa de *build* (construção) do site, por meio dos *data loaders* do Framework. O navegador recebe apenas arquivos Parquet ou JSON previamente tratados; portanto, questões como chaves de API, limites de requisição (*rate limits*) ou paginação não chegam, em momento algum, aos usuários finais."
+  },
+  "category": "data",
+  "constellation": "libra",
+  "tags": [
+    "javascript",
+    "python",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/public-data-explorer",
+  "liveUrl": "https://davipferr.github.io/public-data-explorer/",
+  "date": "2026-10-10",
+  "status": "finished"
+}

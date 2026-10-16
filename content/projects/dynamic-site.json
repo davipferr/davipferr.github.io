@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "dynamic-site",
+  "title": "Dynamic Site Builder (React)",
+  "tagline": {
+    "en": "A small schema-driven / config-driven UI site builder.",
+    "pt": "Um construtor de sites com interface baseada em esquema/configuração."
+  },
+  "description": {
+    "en": "A small schema-driven / config-driven UI site builder. Each \"client\" has a site described entirely as JSON, and React turns that JSON into a page.\n\nOpen the URL Vite prints. Pick a client in the toolbar (or use `?site=studio` in the URL).",
+    "pt": "Um construtor de sites com interface baseada em esquema/configuração. Para cada \"cliente\", o site é descrito inteiramente em formato JSON, e o React converte esse JSON em uma página.\n\nAbra a URL exibida pelo Vite. Selecione um cliente na barra de ferramentas (ou utilize `?site=studio` na URL)."
+  },
+  "category": "web",
+  "constellation": "libra",
+  "tags": [
+    "javascript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/dynamic-site-builder",
+  "date": "2026-10-05",
+  "status": "finished"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "cognitive-biases",
+  "title": "Cognitive Biases",
+  "tagline": {
+    "en": "Interactive mini-tests that catch you in the bias, plus the small, tested statistics library that scores them.",
+    "pt": "Mini-testes interativos que revelam seus vieses, acompanhados de uma biblioteca estatística compacta e testada que calcula a pontuação desses resultados."
+  },
+  "description": {
+    "en": "Twelve interactive mini-tests that catch you in a bias, built with TypeScript + React 19. You answer first; only then does the page name the bias, score you, and show an interactive picture of what went wrong.\n\nThe statistics that score the tests live in a small, dependency-free library in `src/` (Bayes, run-length distributions, binomial calibration, spatial randomness, Monty Hall), with tests. The playground in `playground/` is the actual experience.",
+    "pt": "Doze minitestes interativos que revelam seus vieses, desenvolvidos com TypeScript e React 19. Você responde primeiro; só então a página identifica o viés, atribui uma pontuação e exibe uma representação visual interativa do que ocorreu.\n\nA lógica estatística que fundamenta a pontuação dos testes reside em uma biblioteca compacta e sem dependências, localizada em `src/` (abrangendo conceitos como teorema de Bayes, distribuições de sequências, calibração binomial, aleatoriedade espacial e o problema de Monty Hall), acompanhada de seus respectivos testes. O ambiente de experimentação, situado em `playground/`, constitui a experiência propriamente dita."
+  },
+  "category": "web",
+  "constellation": "libra",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/cognitive-biases",
+  "date": "2026-10-15",
+  "status": "finished"
+}

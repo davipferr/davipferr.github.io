@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "forecasts-vs-reality",
+  "title": "Forecasts vs. Reality",
+  "tagline": {
+    "en": "How good are forecasters at seeing the future?",
+    "pt": "Quão bons são os previsores em enxergar o futuro?"
+  },
+  "description": {
+    "en": "How good are forecasters at seeing the future? Four of them, each scored against what actually happened and against the simplest forecast of all, \"nothing changes\":\n\nA static data site built with a Python pipeline (httpx + Polars) and Observable Framework (Observable Plot for charts, DuckDB-WASM for in-browser SQL), the same stack as `public-data-explorer`.",
+    "pt": "Quão bons são os especialistas em previsões ao antecipar o futuro? Analisamos quatro deles, avaliando o desempenho de cada um com base no que realmente aconteceu e em comparação com a previsão mais simples de todas: \"nada muda\".\n\nUm site de dados estáticos construído com um pipeline em Python (httpx + Polars) e o Observable Framework (Observable Plot para gráficos, DuckDB-WASM para consultas SQL diretamente no navegador) — a mesma stack utilizada no `public-data-explorer`."
+  },
+  "category": "data",
+  "constellation": "aries",
+  "tags": [
+    "javascript",
+    "python",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/forecasts-vs-reality",
+  "liveUrl": "https://davipferr.github.io/forecasts-vs-reality/",
+  "date": "2026-10-11",
+  "status": "finished"
+}

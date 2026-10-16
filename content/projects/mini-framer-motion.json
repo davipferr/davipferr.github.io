@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "mini-framer-motion",
+  "title": "Mini Framer Motion",
+  "tagline": {
+    "en": "A tiny, educational re-implementation of Framer Motion: springs, AnimatePresence and FLIP layout animations.",
+    "pt": "Uma reimplantação minúscula e educativa do Framer Motion: molas, AnimatePresence e animações de layout baseadas na técnica FLIP."
+  },
+  "description": {
+    "en": "A small, educational re-implementation of Framer Motion in TypeScript + React 19. There are no animation libraries: springs are integrated by hand on `requestAnimationFrame`, exit animations keep unmounted children alive, and layout animations use FLIP.\n\nSections 2–5 watch one shared simulation (`playground/physics.ts`).",
+    "pt": "Uma reimplantação didática e simplificada do Framer Motion, utilizando TypeScript e React 19. Não foram utilizadas bibliotecas de animação: os efeitos de mola (*springs*) foram implementados manualmente por meio de `requestAnimationFrame`, as animações de saída mantêm ativos os elementos que foram removidos da árvore de componentes, e as animações de layout utilizam a técnica FLIP.\n\nAs seções 2 a 5 baseiam-se em uma única simulação compartilhada (`playground/physics.ts`)."
+  },
+  "category": "web",
+  "constellation": "libra",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/mini-framer-motion",
+  "date": "2026-10-10",
+  "status": "finished"
+}

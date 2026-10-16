@@ -1,0 +1,22 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "dbdriven",
+  "title": "DBDriven",
+  "tagline": {
+    "en": "A full-stack app where PostgreSQL holds all the business logic.",
+    "pt": "Uma aplicação full-stack em que o PostgreSQL concentra toda a lógica de negócios."
+  },
+  "description": {
+    "en": "A full-stack app where PostgreSQL holds all the business logic.\n\nAuth, permissions, validation, business rules, realtime events, a job queue, a safe query builder and a concurrency lab, all implemented in SQL. The backend is a ~200-line gateway that doesn't know what a \"user\" or a \"todo\" is: it turns HTTP calls into SQL function calls and relays notifications to the browser.",
+    "pt": "Uma aplicação *full-stack* na qual o PostgreSQL concentra toda a lógica de negócios.\n\nAutenticação, permissões, validação, regras de negócio, eventos em tempo real, fila de tarefas, um construtor de consultas seguro e um ambiente para testes de concorrência — tudo implementado em SQL. O *backend* consiste em um *gateway* de cerca de 200 linhas que desconhece conceitos como \"usuário\" ou \"tarefa\" (*todo*): ele converte chamadas HTTP em chamadas de funções SQL e encaminha notificações para o navegador."
+  },
+  "category": "backend",
+  "tags": [
+    "javascript",
+    "docker",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/dbdriven",
+  "date": "2026-10-07",
+  "status": "finished"
+}

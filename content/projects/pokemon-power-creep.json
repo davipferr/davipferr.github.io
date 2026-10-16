@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "pokemon-power-creep",
+  "title": "Power creep Pokémon",
+  "tagline": {
+    "en": "A static data site asking are newer Pokémon stronger than older ones?, built from the PokeAPI with a Python pipeline (Polars) and Observable Framework (Observable Plot for charts, DuckDB-WASM for in-browser SQL).",
+    "pt": "Um site de dados estáticos que busca responder à pergunta: \"Os Pokémon mais recentes são mais fortes do que os mais antigos?\". O projeto foi construído a partir da PokeAPI, utilizando um pipeline em Python (com a biblioteca Polars) e o Observable Framework (empregando Observable Plot para a criação de gráficos e DuckDB-WASM para a execução de consultas SQL diretamente no navegador)."
+  },
+  "description": {
+    "en": "A static data site asking are newer Pokémon stronger than older ones?, built from the PokeAPI with a Python pipeline (Polars) and Observable Framework (Observable Plot for charts, DuckDB-WASM for in-browser SQL). The site is in Portuguese.\n\nEvery API call happens at build time in Framework data loaders. The browser only downloads pre-cleaned Parquet/JSON files (plus official artwork, hotlinked from PokeAPI's sprite repository on the profile page).",
+    "pt": "Um site de dados estáticos que explora a pergunta: \"Os Pokémon mais recentes são mais fortes do que os mais antigos?\". O projeto foi construído a partir da PokeAPI, utilizando um pipeline em Python (com a biblioteca Polars) e o Observable Framework (empregando o Observable Plot para a criação de gráficos e o DuckDB-WASM para a execução de consultas SQL diretamente no navegador). O site está disponível em português.\n\nTodas as chamadas à API ocorrem durante a etapa de compilação (build time), por meio dos *data loaders* do Framework. O navegador baixa apenas arquivos Parquet ou JSON previamente tratados (além das ilustrações oficiais, que são carregadas via link direto a partir do repositório de *sprites* da PokeAPI, na página de perfil)."
+  },
+  "category": "data",
+  "constellation": "aries",
+  "tags": [
+    "javascript",
+    "python",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/pokemon-power-creep",
+  "liveUrl": "https://davipferr.github.io/pokemon-power-creep/",
+  "date": "2026-10-12",
+  "status": "finished"
+}

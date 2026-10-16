@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "car-price-model",
+  "title": "Quanto vale o seu carro?",
+  "tagline": {
+    "en": "A static site with a machine learning model of used-car prices in Brazil, trained on the Tabela FIPE.",
+    "pt": "Um site estático com um modelo de aprendizado de máquina para preços de carros usados ​​no Brasil, treinado com base na Tabela FIPE."
+  },
+  "description": {
+    "en": "A static site with a machine learning model of used-car prices in Brazil, trained on the Tabela FIPE. A Python pipeline (Polars) downloads every version × model year of 90 popular models, a LightGBM model learns the price from what the FIPE version name says (family, engine, transmission, trim words) and the car's age, and the model is exported to ONNX so the site's simulator runs it in the browser (ONNX Runtime Web). Pages are built with Observable Framework (Observable Plot, DuckDB-WASM for in-browser SQL).\n\nNothing is computed on a server: data is downloaded and the model is trained on your computer; the browser only downloads Parquet/JSON files and the `.onnx` model.",
+    "pt": "Um site estático que apresenta um modelo de aprendizado de máquina para estimar preços de carros usados ​​no Brasil, treinado com base na Tabela FIPE. Um pipeline em Python (utilizando a biblioteca Polars) coleta dados de diversas versões e anos-modelo de 90 veículos populares. Um modelo LightGBM aprende a definir o preço com base nas informações contidas na descrição da versão na Tabela FIPE (família, motor, transmissão, nível de acabamento) e na idade do veículo. O modelo é exportado para o formato ONNX, permitindo que o simulador presente no site seja executado diretamente no navegador (via ONNX Runtime Web). As páginas foram construídas utilizando o Observable Framework (com Observable Plot e DuckDB-WASM para consultas SQL no próprio navegador).\n\nNenhum processamento ocorre em um servidor: os dados são baixados e o modelo é treinado no seu próprio computador; o navegador apenas realiza o download de arquivos nos formatos Parquet/JSON e do modelo `.onnx`."
+  },
+  "category": "data",
+  "constellation": "aries",
+  "tags": [
+    "javascript",
+    "python",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/car-price-model",
+  "liveUrl": "https://davipferr.github.io/car-price-model/",
+  "date": "2026-10-15",
+  "status": "finished"
+}

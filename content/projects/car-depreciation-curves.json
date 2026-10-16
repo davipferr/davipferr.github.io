@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "car-depreciation-curves",
+  "title": "Curvas de depreciação",
+  "tagline": {
+    "en": "A static data site about how fast cars lose value in Brazil, built from the Tabela FIPE with a Python pipeline (Polars) and Observable Framework (Observable Plot for charts, DuckDB-WASM for in-browser SQL).",
+    "pt": "Um site de dados estáticos sobre a rapidez com que os carros perdem valor no Brasil, construído a partir da Tabela FIPE com um pipeline em Python (Polars) e o Observable Framework (Observable Plot para gráficos, DuckDB-WASM para execução de SQL no navegador)."
+  },
+  "description": {
+    "en": "A static data site about how fast cars lose value in Brazil, built from the Tabela FIPE with a Python pipeline (Polars) and Observable Framework (Observable Plot for charts, DuckDB-WASM for in-browser SQL). Prices are deflated with the IPCA from the Banco Central.\n\nEvery API call happens at build time in Framework data loaders. The browser only downloads pre-cleaned Parquet/JSON files.",
+    "pt": "Um site de dados estáticos sobre a desvalorização de carros no Brasil, construído a partir da Tabela FIPE utilizando um pipeline em Python (Polars) e o Observable Framework (com Observable Plot para gráficos e DuckDB-WASM para consultas SQL diretamente no navegador). Os preços são ajustados pela inflação (deflacionados) com base no IPCA, do Banco Central.\n\nTodas as chamadas de API ocorrem durante a etapa de compilação (*build*), por meio dos *data loaders* do Framework. O navegador baixa apenas arquivos Parquet/JSON previamente tratados."
+  },
+  "category": "data",
+  "constellation": "aries",
+  "tags": [
+    "javascript",
+    "python",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/car-depreciation-curves",
+  "liveUrl": "https://davipferr.github.io/car-depreciation-curves/",
+  "date": "2026-10-11",
+  "status": "finished"
+}
