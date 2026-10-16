@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "aurora-and-space-weather-dashborad",
+  "title": "Aurora & Space Weather",
+  "tagline": {
+    "en": "A live aurora forecast on a 3D globe, plus a space-weather dashboard, built with TypeScript + Vite + Three.js and data straight from NOAA's Space Weather Prediction Center.",
+    "pt": "Uma previsão de auroras em tempo real em um globo 3D, acompanhada de um painel de clima espacial — tudo desenvolvido com TypeScript, Vite e Three.js, utilizando dados provenientes diretamente do Space Weather Prediction Center da NOAA."
+  },
+  "description": {
+    "en": "A live aurora forecast on a 3D globe, plus a space-weather dashboard, built with TypeScript + Vite + Three.js and data straight from NOAA's Space Weather Prediction Center. No backend and no API key, so it runs on GitHub Pages.\n\nAll from `https://services.swpc.noaa.gov`. Every feed sends `Access-Control-Allow-Origin: *`. Each feed loads independently, so one failing doesn't break the rest. The app refreshes every 5 minutes, and when you come back to the tab.",
+    "pt": "Uma previsão de auroras em tempo real exibida em um globo 3D, acompanhada por um painel de clima espacial. O projeto foi desenvolvido utilizando TypeScript, Vite e Three.js, com dados provenientes diretamente do Space Weather Prediction Center (Centro de Previsão de Clima Espacial) da NOAA. Não há backend nem necessidade de chave de API, permitindo que a aplicação seja executada no GitHub Pages.\n\nTodos os dados são obtidos de `https://services.swpc.noaa.gov`. Cada fonte de dados inclui o cabeçalho `Access-Control-Allow-Origin: *` e é carregada de forma independente; portanto, uma falha em uma delas não compromete o restante. A aplicação é atualizada a cada 5 minutos, bem como sempre que você retorna à aba do navegador."
+  },
+  "category": "3d",
+  "constellation": "leo",
+  "tags": [
+    "typescript",
+    "threejs",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/aurora-and-space-weather-dashborad",
+  "liveUrl": "https://davipferr.github.io/aurora-and-space-weather-dashborad/",
+  "date": "2026-10-10",
+  "status": "finished"
+}

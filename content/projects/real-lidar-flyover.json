@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "real-lidar-flyover",
+  "title": "Real LiDAR Flyover",
+  "tagline": {
+    "en": "Fly over real airborne laser scans of the United States.",
+    "pt": "Sobrevoe varreduras a laser reais feitas a partir de aeronaves nos Estados Unidos."
+  },
+  "description": {
+    "en": "Fly over real airborne laser scans of the United States. The USGS 3D Elevation Program has measured most of the country with LiDAR. On AWS Open Data the scans are published as streamable octrees: 2,289 datasets, from 0.8 million to 467 billion points each (`CA_NorthernCA_5_B22`). This app streams only the part you're looking at, decompresses it in Web Workers, and draws it with Three.js.\n\nTypeScript + Vite + Three.js + laz-perf (LASzip compiled to WebAssembly). There's no backend: the S3 bucket is public with `Access-Control-Allow-Origin: *`, so the app runs as a static site on GitHub Pages.",
+    "pt": "Explore, por meio de sobrevoos, varreduras a laser reais realizadas nos Estados Unidos. O programa 3D Elevation Program, do USGS, mapeou a maior parte do país utilizando a tecnologia LiDAR. No AWS Open Data, esses dados estão disponíveis na forma de *octrees* (estruturas de dados em árvore) que podem ser transmitidas via *streaming*: são 2.289 conjuntos de dados, variando de 800 mil a 467 bilhões de pontos cada (ex.: `CA_NorthernCA_5_B22`). Esta aplicação transmite apenas a parte que está sendo visualizada, realiza a descompressão por meio de *Web Workers* e faz a renderização utilizando a biblioteca Three.js.\n\nDesenvolvido com TypeScript, Vite, Three.js e a biblioteca laz-perf (LASzip compilado para WebAssembly). Não há *backend*: o *bucket* no S3 é público e configurado com `Access-Control-Allow-Origin: *`, permitindo que a aplicação seja executada como um site estático no GitHub Pages."
+  },
+  "category": "3d",
+  "constellation": "leo",
+  "tags": [
+    "typescript",
+    "threejs",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/real-lidar-flyover",
+  "liveUrl": "https://davipferr.github.io/real-lidar-flyover/",
+  "date": "2026-10-12",
+  "status": "finished"
+}

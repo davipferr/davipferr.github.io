@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "music-visualizer",
+  "title": "Music Visualizer",
+  "tagline": {
+    "en": "Search any song and watch it as a 3D landscape.",
+    "pt": "Pesquise qualquer música e visualize-a como uma paisagem 3D."
+  },
+  "description": {
+    "en": "Search any song and watch it as a 3D landscape. Built with TypeScript + Vite + Three.js on the iTunes Search API (free, no key, CORS-enabled) and the Web Audio API. Every song gets a 30-second preview, and the scene takes its colours from the album cover.\n\nYou can also visualize your microphone or drop an audio file anywhere on the page.",
+    "pt": "Pesquise qualquer música e visualize-a como uma paisagem 3D. O projeto foi desenvolvido com TypeScript, Vite e Three.js, utilizando a iTunes Search API (gratuita, sem necessidade de chave, com suporte a CORS) e a Web Audio API. Cada música oferece uma prévia de 30 segundos, e as cores da cena são extraídas da capa do álbum.\n\nVocê também pode visualizar a entrada do seu microfone ou soltar um arquivo de áudio em qualquer parte da página."
+  },
+  "category": "3d",
+  "constellation": "leo",
+  "tags": [
+    "typescript",
+    "threejs",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/music-visualizer",
+  "liveUrl": "https://davipferr.github.io/music-visualizer/",
+  "date": "2026-10-10",
+  "status": "finished"
+}

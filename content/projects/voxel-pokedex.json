@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "voxel-pokedex",
+  "title": "Voxel Pokédex",
+  "tagline": {
+    "en": "Every Pokémon sprite, rebuilt in 3D voxels.",
+    "pt": "Cada sprite de Pokémon, reconstruído em voxels 3D."
+  },
+  "description": {
+    "en": "Every Pokémon sprite, rebuilt in 3D voxels. Each opaque pixel becomes a column of cubes, puffed out so the body is round and the limbs stay thin. Switching Pokémon makes the cubes explode and reassemble into the next one. Built with TypeScript + Vite + Three.js on PokéAPI (free, no key, CORS-enabled, and so are its sprites).\n\nThe URL keeps the Pokémon (`#25`, or `#pikachu`), so links are shareable. Settings (sprite style from Gen I to Gen V, transition, inflation) are in the ⚙ panel.",
+    "pt": "Cada sprite de Pokémon foi reconstruído usando voxels 3D. Cada pixel opaco transforma-se em uma coluna de cubos, expandida de modo que o corpo fique arredondado, enquanto os membros permanecem finos. Ao trocar de Pokémon, os cubos se dispersam e se reorganizam para formar o próximo personagem. O projeto foi desenvolvido com TypeScript, Vite e Three.js, utilizando a PokéAPI (que é gratuita, não exige chave de acesso, possui suporte a CORS — assim como seus sprites).\n\nA URL registra o Pokémon selecionado (por exemplo, `#25` ou `#pikachu`), permitindo que os links sejam compartilhados. As configurações — como o estilo do sprite (da Geração I à Geração V), o tipo de transição e o nível de expansão — podem ser ajustadas no painel identificado pelo ícone ⚙."
+  },
+  "category": "3d",
+  "constellation": "leo",
+  "tags": [
+    "typescript",
+    "threejs",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/voxel-pokedex",
+  "liveUrl": "https://davipferr.github.io/voxel-pokedex/",
+  "date": "2026-10-10",
+  "status": "finished"
+}

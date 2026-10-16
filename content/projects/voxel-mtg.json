@@ -1,0 +1,25 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "voxel-mtg",
+  "title": "Voxel MTG",
+  "tagline": {
+    "en": "Magic: The Gathering cards rebuilt in 3D voxels, with the subject of the art popping out of the card.",
+    "pt": "Cartas de Magic: The Gathering recriadas em voxels 3D, com o elemento central da arte saltando para fora da carta."
+  },
+  "description": {
+    "en": "Magic: The Gathering cards rebuilt in 3D voxels, with the subject of the art popping out of the card. The card becomes a voxel slab. An in-browser segmentation model cuts the creature (or whatever the art is of) out of the illustration, and that cutout is inflated into a rounded voxel figure that rises out of the card. Built with TypeScript + Vite + Three.js on Scryfall (free, no key, CORS-enabled, and so are its images) and transformers.js.\n\nIt's the sibling of voxel-pokedex, which does the same with Pokémon sprites. The voxel engine (transitions, GPU animation, poke ripple) is shared; what's new is getting depth out of a card, which has no transparent background to give it a silhouette.",
+    "pt": "Cartas de *Magic: The Gathering* reconstruídas em voxels 3D, com o elemento central da arte saltando para fora da carta. A carta transforma-se em um bloco de voxels. Um modelo de segmentação, executado diretamente no navegador, recorta a criatura (ou o que quer que esteja representado na arte) da ilustração; esse recorte é, então, expandido em uma figura de voxels com formas arredondadas que se projeta para fora da carta. O projeto foi desenvolvido utilizando TypeScript, Vite, Three.js e transformers.js, integrando-se à API do Scryfall (que é gratuita, não exige chave de acesso, permite requisições CORS — assim como suas imagens).\n\nÉ um projeto \"irmão\" do *voxel-pokedex*, que realiza um processo semelhante com sprites de Pokémon. Ambos compartilham o mesmo motor de voxels (responsável por transições, animações via GPU e efeitos de ondulação). A grande novidade aqui é a extração de profundidade a partir de uma carta, que, diferentemente de um sprite, não possui um fundo transparente que defina claramente sua silhueta."
+  },
+  "category": "3d",
+  "constellation": "leo",
+  "tags": [
+    "typescript",
+    "ai",
+    "threejs",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/voxel-mtg",
+  "liveUrl": "https://davipferr.github.io/voxel-mtg/",
+  "date": "2026-10-11",
+  "status": "finished"
+}
