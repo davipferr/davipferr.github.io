@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "email-organization",
+  "title": "Mail Organizer",
+  "tagline": {
+    "en": "Take back control of a messy Gmail inbox.",
+    "pt": "Retome o controle de uma caixa de entrada do Gmail bagunçada."
+  },
+  "description": {
+    "en": "Take back control of a messy Gmail inbox. Browse, search, tag, move and bulk-clean thousands of emails, see who fills your inbox, unsubscribe in one click, and find out what's eating your storage.\n\nClick an email to read it in a side drawer. HTML emails are rendered in a sandboxed frame (scripts never run), and opening an unread email marks it as read.",
+    "pt": "Retome o controle de uma caixa de entrada do Gmail bagunçada. Navegue, pesquise, aplique marcadores, mova e limpe milhares de e-mails de uma só vez; veja quem está lotando sua caixa de entrada, cancele inscrições com um único clique e descubra o que está ocupando seu espaço de armazenamento.\n\nClique em um e-mail para lê-lo em um painel lateral. E-mails em HTML são exibidos em um ambiente isolado (scripts nunca são executados), e abrir um e-mail não lido faz com que ele seja marcado como lido."
+  },
+  "category": "backend",
+  "constellation": "gemini",
+  "tags": [
+    "javascript",
+    "docker",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/email-organizer",
+  "date": "2026-10-04",
+  "status": "finished"
+}

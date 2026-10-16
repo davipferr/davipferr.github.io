@@ -1,0 +1,19 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "options",
+  "title": "Options",
+  "tagline": {
+    "en": "check which options are valid for the current month and when each option expires",
+    "pt": "cheque quais opções são validas no mês atual e quando cada opção expira"
+  },
+  "description": {
+    "en": "Set of features regarding option expirations for options traders in the Brazilian market",
+    "pt": "Conjunto de funcionalidades sobre vencimentos de opções para traders de opções no mercado Brasilerio"
+  },
+  "category": "web",
+  "constellation": "aquarius",
+  "tags": [],
+  "repoUrl": "https://github.com/davipferr/options",
+  "date": "2025-10-12",
+  "status": "finished"
+}

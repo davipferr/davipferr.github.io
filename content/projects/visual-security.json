@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "visual-security",
+  "title": "Visual Security",
+  "tagline": {
+    "en": "An interactive page about web security: hashing, salting, JWT, XSS and SQL injection, each with a protected / unprotected switch.",
+    "pt": "Uma página interativa sobre segurança na web: hashing, salting, JWT, XSS e injeção de SQL, cada um com uma opção para alternar entre os estados \"protegido\" e \"desprotegido\"."
+  },
+  "description": {
+    "en": "An interactive page about five classic web defenses (hashing, salting, JWT signatures, output escaping and parameterized queries). Each one has a Protected / Unprotected switch, so you can turn it off and watch what breaks.\n\nSame stack as `mini-framer-motion`: React 19, TypeScript, Vite and Vitest. There is no backend and no database. The \"server\", the \"users table\" and the \"attacker\" are plain JavaScript running in the tab, and the crypto is the browser's own Web Crypto API.",
+    "pt": "Uma página interativa sobre cinco defesas clássicas para a web (hashing, salting, assinaturas JWT, escape de saída e consultas parametrizadas). Cada uma conta com uma chave seletora \"Protegido / Não protegido\", permitindo que você desative a proteção e observe o que deixa de funcionar.\n\nA stack tecnológica é a mesma utilizada no `mini-framer-motion`: React 19, TypeScript, Vite e Vitest. Não há backend nem banco de dados. O \"servidor\", a \"tabela de usuários\" e o \"atacante\" são, na verdade, código JavaScript simples executado diretamente na aba do navegador; a parte criptográfica utiliza a Web Crypto API, nativa do próprio navegador."
+  },
+  "category": "web",
+  "constellation": "aquarius",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/visual-security",
+  "date": "2026-10-15",
+  "status": "finished"
+}

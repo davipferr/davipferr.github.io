@@ -1,0 +1,21 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "manga-whisper-background-worker",
+  "title": "MangaWhisper Background Worker",
+  "tagline": {
+    "en": "A standalone background service that checks for new manga chapters by scraping the source sites with Selenium (headless Chromium).",
+    "pt": "Um serviço de segundo plano autônomo que verifica a existência de novos capítulos de mangá, realizando a extração de dados (scraping) nos sites de origem por meio do Selenium (Chromium em modo *headless*)."
+  },
+  "description": {
+    "en": "A standalone background service that checks for new manga chapters by scraping the source sites with Selenium (headless Chromium).\n\nThis project was split from the main MangaWhisper application because the API was hosted on a plan that stops idle apps, and this worker has to be always running. It shares the PostgreSQL database with the API; the two applications never call each other.",
+    "pt": "Um serviço de segundo plano independente que verifica a existência de novos capítulos de mangá, realizando a coleta de dados (scraping) nos sites de origem por meio do Selenium (Chromium em modo *headless*).\n\nEste projeto foi separado da aplicação principal, MangaWhisper, pois a API estava hospedada em um plano que suspende aplicações ociosas, enquanto este serviço precisa estar em execução constante. Ele compartilha o banco de dados PostgreSQL com a API; as duas aplicações nunca realizam chamadas entre si."
+  },
+  "category": "backend",
+  "constellation": "aquarius",
+  "tags": [
+    "csharp"
+  ],
+  "repoUrl": "https://github.com/davipferr/manga-whisper-background-worker",
+  "date": "2026-01-10",
+  "status": "active"
+}

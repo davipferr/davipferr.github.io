@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "patterns-in-motion",
+  "title": "Patterns in Motion",
+  "tagline": {
+    "en": "Design and architecture patterns as live simulations you can poke, tune and break.",
+    "pt": "Design and architecture patterns as live simulations you can poke, tune and break."
+  },
+  "description": {
+    "en": "Design and architecture patterns as live simulations you can poke, tune and break. One pizza shop, built eight different ways.\n\nEvery section has three parts:",
+    "pt": "Padrões de design e arquitetura como simulações vivas que você pode manipular, ajustar e quebrar. Uma pizzaria, construída de oito maneiras diferentes.\n\nCada seção é composta por três partes:"
+  },
+  "category": "web",
+  "constellation": "gemini",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/patterns-in-motion",
+  "date": "2026-10-15",
+  "status": "active"
+}

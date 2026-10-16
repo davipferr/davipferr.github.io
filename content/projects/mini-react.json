@@ -1,0 +1,22 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "mini-react",
+  "title": "Mini React",
+  "tagline": {
+    "en": "createElement, virtual DOM diffing, and hooks in ~300 lines",
+    "pt": "createElement, comparação de DOM virtual (diffing) e hooks em cerca de 300 linhas"
+  },
+  "description": {
+    "en": "A React/Preact look-alike in one file, `src/mini-react.js`: about 245 lines of code (350 with comments), no dependencies, no build step.\n\n`serve.js` is a small static server. Browsers won't load ES modules from `file://` URLs, so you need a server.",
+    "pt": "Uma implementação semelhante ao React/Preact contida em um único arquivo, `src/mini-react.js`: cerca de 245 linhas de código (350 incluindo comentários), sem dependências e sem etapa de build.\n\nO `serve.js` é um servidor estático simples. Como os navegadores não carregam módulos ES a partir de URLs `file://`, é necessário utilizar um servidor."
+  },
+  "category": "tools",
+  "constellation": "gemini",
+  "tags": [
+    "javascript",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/mini-react",
+  "date": "2026-10-08",
+  "status": "finished"
+}

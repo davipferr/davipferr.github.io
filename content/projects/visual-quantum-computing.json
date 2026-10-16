@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "visual-quantum-computing",
+  "title": "Visual Quantum Computing",
+  "tagline": {
+    "en": "A tiny, educational state-vector quantum simulator with an interactive playground: Bloch spheres, gates, entanglement and Grover's search.",
+    "pt": "Um simulador quântico educacional, de pequena escala e baseado em vetores de estado, que conta com um ambiente interativo: esferas de Bloch, portas quânticas, emaranhamento e o algoritmo de busca de Grover."
+  },
+  "description": {
+    "en": "A small, educational state-vector quantum simulator in TypeScript, plus an interactive React 19 playground about it: Bloch spheres, gates as rotations, measurement, entanglement, a Bell test, a circuit composer, and Grover's search step by step. There are no quantum or math libraries. Complex numbers, gates and the simulator are written by hand, and every picture is drawn on a 2-D canvas.\n\nA sidebar holds the contents, an animation-speed slider and the notation.",
+    "pt": "Um simulador quântico educacional de pequeno porte, baseado em vetores de estado e desenvolvido em TypeScript, acompanhado por um ambiente interativo em React 19: esferas de Bloch, portas lógicas como rotações, medição, emaranhamento, teste de Bell, um construtor de circuitos e o algoritmo de busca de Grover passo a passo. Não foram utilizadas bibliotecas quânticas ou matemáticas externas. Números complexos, portas lógicas e o próprio simulador foram implementados manualmente, e todos os elementos visuais são renderizados em um canvas 2D.\n\nUma barra lateral contém o índice, um controle deslizante para a velocidade das animações e a notação utilizada."
+  },
+  "category": "web",
+  "constellation": "aquarius",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/visual-quantum-computing",
+  "date": "2026-10-15",
+  "status": "finished"
+}

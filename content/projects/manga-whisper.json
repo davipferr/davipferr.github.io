@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "manga-whisper",
+  "title": "Manga Whisper",
+  "tagline": {
+    "en": "The API and the worker never call each other: they only share the database.",
+    "pt": "A API e o worker nunca chamam um ao outro: eles apenas compartilham o banco de dados."
+  },
+  "description": {
+    "en": "The API and the worker never call each other: they only share the database.\n\nIn the root of this repo, make a copy of `.env.example` and rename it to `.env`. Adjust the values if you want (passwords, admin user, worker schedule).",
+    "pt": "A API e o *worker* nunca se comunicam diretamente; eles apenas compartilham o banco de dados.\n\nNa raiz deste repositório, crie uma cópia do arquivo `.env.example` e renomeie-a para `.env`. Ajuste os valores, se desejar (senhas, usuário administrador, agendamento do *worker*)."
+  },
+  "category": "backend",
+  "constellation": "aquarius",
+  "tags": [
+    "javascript",
+    "csharp",
+    "docker",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/manga-whisper",
+  "date": "2025-09-04",
+  "status": "active"
+}

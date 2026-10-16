@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "visual-wifi-and-radio",
+  "title": "Wi-Fi and radio, visually",
+  "tagline": {
+    "en": "How Wi-Fi and radio work: AM, FM and QAM drawn as waveforms and constellations, with noise and live bit errors.",
+    "pt": "How Wi-Fi and radio work: AM, FM and QAM drawn as waveforms and constellations, with noise and live bit errors."
+  },
+  "description": {
+    "en": "How Wi-Fi and radio work: modulation (AM, FM, QAM) drawn as waveforms and constellations. Add noise and watch the bit errors appear.\n\nA small TypeScript signal-processing library (no DSP dependencies: the FFT, modulators, demodulators, noise and error-rate maths are written by hand) plus an interactive React 19 playground built on `<canvas>`.",
+    "pt": "Como funcionam o Wi-Fi e o rádio: modulação (AM, FM, QAM) representada por meio de formas de onda e constelações. Adicione ruído e observe o surgimento de erros de bit.\n\nUma pequena biblioteca de processamento de sinais em TypeScript (sem dependências de DSP — a FFT, os moduladores, os demoduladores, bem como os cálculos de ruído e taxa de erro, foram implementados manualmente), acompanhada de um ambiente interativo em React 19, construído com base no elemento `<canvas>`."
+  },
+  "category": "web",
+  "constellation": "aquarius",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/visual-wifi-and-radio",
+  "date": "2026-10-15",
+  "status": "finished"
+}

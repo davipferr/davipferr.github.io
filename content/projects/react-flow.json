@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "react-flow",
+  "title": "FlowForge",
+  "tagline": {
+    "en": "A small n8n-style workflow builder made with React + React Flow.",
+    "pt": "Um construtor de fluxos de trabalho, no estilo n8n, criado com React + React Flow."
+  },
+  "description": {
+    "en": "A small n8n-style workflow builder made with React + React Flow. Build a flow by connecting nodes, click Run, and each node receives the previous node's output as `input`.\n\nOpen http://localhost:5173.",
+    "pt": "Um pequeno construtor de fluxos de trabalho no estilo n8n, feito com React + React Flow. Crie um fluxo conectando nós, clique em Executar e cada nó receberá a saída do nó anterior como `entrada`.\n\nAbra http://localhost:5173."
+  },
+  "category": "web",
+  "constellation": "gemini",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/react-flow",
+  "date": "2026-10-06",
+  "status": "finished"
+}

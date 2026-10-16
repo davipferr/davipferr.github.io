@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "visual-waves",
+  "title": "Visual Waves",
+  "tagline": {
+    "en": "An interactive, audible tour of waves: superposition, Fourier, interference, resonance, Doppler and instruments.",
+    "pt": "Um tour interativo e sonoro sobre ondas: superposição, Fourier, interferência, ressonância, efeito Doppler e instrumentos."
+  },
+  "description": {
+    "en": "An interactive, audible tour of waves, built with React 19, TypeScript, Canvas 2D and the Web Audio API. Every chapter is a live simulation you can poke at and hear, plus a \"try to break it\" experiment. They are connected by one recurring view: the spectrum (how much of each frequency a sound contains).\n\nNo libraries beyond React, no assets and no network calls: every picture and every sound is computed in the browser.",
+    "pt": "Um tour interativo e sonoro sobre ondas, desenvolvido com React 19, TypeScript, Canvas 2D e a Web Audio API. Cada capítulo consiste em uma simulação em tempo real com a qual você pode interagir e ouvir, incluindo um experimento do tipo \"tente quebrar\". Todos os capítulos estão conectados por um elemento recorrente: o espectro (a proporção de cada frequência presente em um som).\n\nSem bibliotecas além do React, sem recursos externos (assets) e sem chamadas de rede: cada imagem e cada som são processados ​​diretamente no navegador."
+  },
+  "category": "web",
+  "constellation": "aquarius",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/visual-waves",
+  "date": "2026-10-14",
+  "status": "finished"
+}

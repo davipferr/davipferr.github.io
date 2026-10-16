@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "learn-network-protocols",
+  "title": "learn-network-protocols",
+  "tagline": {
+    "en": "Learn how network protocols work under the hood, by running them.",
+    "pt": "Aprenda como os protocolos de rede funcionam \"por baixo do capô\", colocando-os em execução."
+  },
+  "description": {
+    "en": "Learn how network protocols work under the hood, by running them.\n\nEvery demo starts real clients and servers on your machine using Go's standard library with very little abstraction. It then shows each step as it happens: the bytes on the wire, which field each byte belongs to, and why it is there. You can run the demos in the terminal or watch them in a browser UI that draws a live sequence diagram and a hex inspector.",
+    "pt": "Aprenda como os protocolos de rede funcionam \"por baixo do capô\", colocando-os em execução.\n\nCada demonstração inicia clientes e servidores reais em sua máquina, utilizando a biblioteca padrão da linguagem Go com pouquíssima abstração. O sistema exibe cada etapa conforme ela ocorre: os bytes trafegando na rede, a qual campo cada byte pertence e o motivo de ele estar ali. Você pode executar as demonstrações no terminal ou acompanhá-las por meio de uma interface no navegador, que apresenta um diagrama de sequência em tempo real e um inspetor hexadecimal."
+  },
+  "category": "tools",
+  "constellation": "aquarius",
+  "tags": [
+    "javascript",
+    "go",
+    "node"
+  ],
+  "repoUrl": "https://github.com/davipferr/learn-network-protocols",
+  "date": "2026-10-15",
+  "status": "finished"
+}

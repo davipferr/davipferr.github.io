@@ -1,0 +1,22 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "mini-vite",
+  "title": "mini-vite",
+  "tagline": {
+    "en": "A tiny Vite clone for learning: import resolution, module graph, import rewriting and HMR over WebSocket.",
+    "pt": "Um pequeno clone do Vite para fins de aprendizado: resolução de imports, grafo de módulos, reescrita de imports e HMR via WebSocket."
+  },
+  "description": {
+    "en": "It resolves imports, builds a module graph, rewrites import paths, pre-bundles npm dependencies, and does hot module replacement over a WebSocket.\n\nRuntime dependencies:",
+    "pt": "Resolve importações, constrói um grafo de módulos, reescreve caminhos de importação, realiza o pré-empacotamento de dependências do npm e efetua a substituição dinâmica de módulos (hot module replacement) via WebSocket.\n\nDependências em tempo de execução:"
+  },
+  "category": "web",
+  "constellation": "gemini",
+  "tags": [
+    "typescript",
+    "react"
+  ],
+  "repoUrl": "https://github.com/davipferr/mini-vite",
+  "date": "2026-10-08",
+  "status": "finished"
+}

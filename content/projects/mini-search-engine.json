@@ -1,0 +1,21 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "mini-search-engine",
+  "title": "Search & RAG from scratch",
+  "tagline": {
+    "en": "Two learning projects that work together: a search engine and a vector database written in Rust, feeding a RAG chat app in TypeScript that answers questions about your own repos and notes with Claude.",
+    "pt": "Dois projetos de aprendizado que funcionam em conjunto: um mecanismo de busca e um banco de dados vetorial, ambos escritos em Rust, que alimentam uma aplicação de chat baseada em RAG (geração aumentada por recuperação) desenvolvida em TypeScript, a qual responde a perguntas sobre seus próprios repositórios e anotações utilizando o Claude."
+  },
+  "description": {
+    "en": "Two learning projects that work together: a search engine and a vector database written in Rust, feeding a RAG chat app in TypeScript that answers questions about your own repos and notes with Claude.\n\nWhy hybrid? Keyword search finds exact names (`FlowNodeView`, an error code) that embeddings blur. Embeddings find meaning (\"how is the graph saved to disk?\" → `persist.rs`) that keywords miss. Both run on every query, and RRF merges the two ranked lists.",
+    "pt": "Dois projetos de aprendizado que funcionam em conjunto: um mecanismo de busca e um banco de dados vetorial escritos em Rust, alimentando um aplicativo de bate-papo RAG em TypeScript que responde a perguntas sobre seus próprios repositórios e notas com Claude.\n\nPor que híbrido? A busca por palavras-chave encontra nomes exatos (`FlowNodeView`, um código de erro) que os embeddings ocultam. Os embeddings encontram significados (\"como o grafo é salvo em disco?\" → `persist.rs`) que as palavras-chave não revelam. Ambos são executados em cada consulta, e o RRF mescla as duas listas classificadas."
+  },
+  "category": "tools",
+  "constellation": "aquarius",
+  "tags": [
+    "rust"
+  ],
+  "repoUrl": "https://github.com/davipferr/retrieval-from-scratch",
+  "date": "2026-10-09",
+  "status": "finished"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "css-toolbox",
+  "title": "CSS Toolbox",
+  "tagline": {
+    "en": "Visual CSS utilities.",
+    "pt": "Utilitários visuais de CSS."
+  },
+  "description": {
+    "en": "Visual CSS utilities. Tweak, preview and copy in one click.\n\nA small collection of interactive tools that make CSS properties visible. Change a value, watch the result update live, and copy production-ready CSS.",
+    "pt": "Utilitários visuais de CSS. Ajuste, visualize e copie com um clique.\n\nUma pequena coleção de ferramentas interativas que tornam as propriedades CSS visíveis. Altere um valor, acompanhe o resultado sendo atualizado em tempo real e copie um código CSS pronto para uso em produção."
+  },
+  "category": "web",
+  "constellation": "aquarius",
+  "tags": [],
+  "repoUrl": "https://github.com/davipferr/css-toolbox",
+  "date": "2024-03-27",
+  "status": "finished"
+}

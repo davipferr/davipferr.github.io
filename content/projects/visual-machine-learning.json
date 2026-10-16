@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "visual-machine-learning",
+  "title": "Mini Neural Net",
+  "tagline": {
+    "en": "A tiny, educational neural network library written from scratch: backpropagation, gradient descent optimizers and the playground that shows them learning (and overfitting).",
+    "pt": "Uma biblioteca de redes neurais, pequena e de caráter educacional, desenvolvida do zero: inclui retropropagação (backpropagation), otimizadores baseados em gradiente descendente e um ambiente interativo que demonstra o processo de aprendizado (bem como o sobreajuste, ou *overfitting*)."
+  },
+  "description": {
+    "en": "A small, educational neural network library in TypeScript, with an interactive playground that trains networks live in the browser. There are no ML libraries: the forward pass, backpropagation and the optimizers are written by hand, in a few hundred lines.\n\nThe rest have their own controls:",
+    "pt": "Uma pequena biblioteca de redes neurais para fins educacionais, desenvolvida em TypeScript, que conta com um ambiente interativo onde redes são treinadas em tempo real no navegador. Não são utilizadas bibliotecas de aprendizado de máquina (ML): o *forward pass* (propagação direta), a retropropagação (*backpropagation*) e os otimizadores foram implementados manualmente, em apenas algumas centenas de linhas de código.\n\nOs demais elementos possuem seus próprios controles:"
+  },
+  "category": "web",
+  "constellation": "gemini",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/visual-machine-learning",
+  "date": "2026-10-15",
+  "status": "finished"
+}

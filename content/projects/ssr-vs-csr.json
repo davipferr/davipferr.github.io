@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "ssr-vs-csr",
+  "title": "ssr-vs-csr",
+  "tagline": {
+    "en": "The same orders back office (100,000 orders in SQLite) built three ways in Next.js, to see what Server-Side Rendering is good for:",
+    "pt": "O mesmo sistema de retaguarda para pedidos (100.000 pedidos em SQLite), implementado de três formas diferentes em Next.js, para entender para que serve a renderização no lado do servidor (Server-Side Rendering):"
+  },
+  "description": {
+    "en": "The same orders back office (100,000 orders in SQLite) built three ways in Next.js, to see what Server-Side Rendering is good for:\n\nAll versions use the same components, the same SQL and the same simulated DB latency. Only the rendering strategy changes. A metrics panel (bottom-right) shows real FCP/LCP/hydration/bytes from your browser.",
+    "pt": "O mesmo sistema de back office para pedidos (100.000 pedidos em um banco de dados SQLite), implementado de três formas diferentes no Next.js, para demonstrar a utilidade da renderização no lado do servidor (Server-Side Rendering):\n\nTodas as versões utilizam os mesmos componentes, o mesmo código SQL e a mesma latência simulada de banco de dados. A única diferença é a estratégia de renderização. Um painel de métricas (no canto inferior direito) exibe dados reais — FCP, LCP, *hydration* (hidratação) e volume de bytes — coletados diretamente do seu navegador."
+  },
+  "category": "web",
+  "constellation": "gemini",
+  "tags": [
+    "typescript",
+    "nextjs",
+    "react",
+    "tailwind"
+  ],
+  "repoUrl": "https://github.com/davipferr/ssr-vs-csr",
+  "date": "2026-10-09",
+  "status": "finished"
+}
