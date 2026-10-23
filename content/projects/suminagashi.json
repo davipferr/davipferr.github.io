@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "suminagashi",
+  "title": "Suminagashi",
+  "tagline": {
+    "en": "Drop ink on water and watch it bloom and swirl, then export the result as a wallpaper.",
+    "pt": "Pingue tinta na água e observe-a se expandir e girar; depois, exporte o resultado como papel de parede."
+  },
+  "description": {
+    "en": "Drop ink on water and watch it bloom and swirl, then export the result as a wallpaper. Two engines: a GPU fluid simulation (ink drifting in water) and a mathematical marbling mode (Ebru / Suminagashi, after Aubrey Jaffer's marbling equations) with vector export.\n\nStack: TypeScript + Vite + raw WebGL2/GLSL. No runtime dependencies.",
+    "pt": "Pingue tinta na água e observe-a se expandir e girar; depois, exporte o resultado como papel de parede. O projeto conta com dois mecanismos: uma simulação de fluidos via GPU (tinta dispersando-se na água) e um modo de criação de padrões marmorizados baseado em matemática (estilo Ebru/Suminagashi, utilizando as equações de marmorização de Aubrey Jaffer), com suporte para exportação em formato vetorial.\n\nTecnologias utilizadas: TypeScript + Vite + WebGL2/GLSL puro. Sem dependências em tempo de execução."
+  },
+  "category": "web",
+  "constellation": "taurus",
+  "tags": [
+    "typescript",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/suminagashi",
+  "liveUrl": "https://davipferr.github.io/suminagashi/",
+  "date": "2026-10-18",
+  "status": "finished"
+}

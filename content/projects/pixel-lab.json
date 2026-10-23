@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "pixel-lab",
+  "title": "Pixel Lab",
+  "tagline": {
+    "en": "A static, interactive playground about how digital images work and how to manipulate them with code.",
+    "pt": "Um ambiente interativo e estático sobre como funcionam as imagens digitais e como manipulá-las por meio de código."
+  },
+  "description": {
+    "en": "A static, interactive playground about how digital images work and how to manipulate them with code. Every picture is just a `Uint8ClampedArray` of `[r, g, b, a, r, g, b, a, …]`, and every effect is a small loop over it. No image libraries; everything is written by hand in TypeScript and runs in the browser. Nothing you load is uploaded anywhere.\n\nPick one of the generated sample pictures (or drop your own) in the sidebar; every section works on it.",
+    "pt": "Um ambiente interativo e estático para explorar como as imagens digitais funcionam e como manipulá-las por meio de código. Cada imagem nada mais é do que um `Uint8ClampedArray` — uma sequência do tipo `[r, g, b, a, r, g, b, a, …]` — e cada efeito consiste em um pequeno loop que percorre esses dados. Não são utilizadas bibliotecas de processamento de imagem; tudo foi escrito manualmente em TypeScript e é executado diretamente no navegador. Nenhum arquivo carregado por você é enviado para qualquer outro lugar.\n\nSelecione uma das imagens de exemplo geradas (ou envie a sua própria) na barra lateral; todas as seções funcionam com base nela."
+  },
+  "category": "web",
+  "constellation": "pisces",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/pixel-lab",
+  "date": "2026-10-17",
+  "status": "finished"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "scrape-chat",
+  "title": "scrape-chat",
+  "tagline": {
+    "en": "AI-powered web scraper with a chat interface: describe what you want to extract, and the agent selects the appropriate skill and returns the data as artifacts.",
+    "pt": "Web scraper com IA numa interface de chat: descreva o que quer extrair, o agente escolhe a skill certa e devolve os dados como artefatos."
+  },
+  "description": {
+    "en": "An AI-powered web scraper with a chat interface. You paste a link and specify what you need (\"name, price, and rating for each laptop,\" \"the entire documentation in Markdown,\" \"notify me when the promotions page changes\"), or simply click a shortcut. The agent determines the scraping method, executes the task, verifies the results, and provides a table ready for download.\n\nRequires Node ≥ 22.18. The engine CLIs (`just-scrape`, `browse`) are pinned in `package.json`; nothing is installed globally.",
+    "pt": "Web scraper com IA numa interface de chat. Você cola um link e diz o que quer dele (\"nome, preço e avaliação de cada notebook\", \"a documentação inteira em Markdown\", \"me avise quando a página de promoções mudar\"), ou só clica num atalho. O agente escolhe como raspar, roda, confere o resultado e devolve uma tabela pronta para baixar.\n\nPrecisa de Node ≥ 22.18. Os CLIs dos motores (`just-scrape`, `browse`) vêm fixados no `package.json`; nada é instalado global."
+  },
+  "category": "web",
+  "constellation": "capricornus",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/scrape-chat",
+  "date": "2026-10-17",
+  "status": "finished"
+}

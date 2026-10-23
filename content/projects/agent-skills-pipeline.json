@@ -1,0 +1,19 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "agent-skills-pipeline",
+  "title": "agent-skills-pipeline",
+  "tagline": {
+    "en": "A model for projects that use chained skills: an idea passes through eight stages (each representing an agent skill) and emerges as an innovative resource that has been tested, verified from a user’s perspective, reviewed, and documented.",
+    "pt": "Um template para projetos que usam skills encadeadas: uma ideia passa por oito etapas (cada uma uma Agent Skill) e sai como feature implementada com testes, verificada como um usuário usaria, revisada e documentada."
+  },
+  "description": {
+    "en": "A template for projects that use chained skills: an idea moves through eight stages (each being an \"Agent Skill\") and emerges as a fully implemented feature—complete with tests, verified from a user’s perspective, reviewed, and documented. It works with Claude Code, Codex, and any agent compatible with the Agent Skills standard.\n\nThe entire pipeline resides within a single folder. Everything generated during an execution is stored outside of that folder.",
+    "pt": "Um template para projetos que usam skills encadeadas: uma ideia passa por oito etapas (cada uma uma Agent Skill) e sai como feature implementada com testes, verificada como um usuário usaria, revisada e documentada. Funciona com Claude Code, Codex e qualquer agente compatível com o padrão Agent Skills.\n\nTudo o que é o pipeline mora em uma pasta. Tudo o que uma execução gera fica fora dela."
+  },
+  "category": "other",
+  "constellation": "sagittarius",
+  "tags": [],
+  "repoUrl": "https://github.com/davipferr/agent-skills-pipeline",
+  "date": "2026-10-17",
+  "status": "finished"
+}

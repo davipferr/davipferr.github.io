@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "bento-artifacts",
+  "title": "Bento",
+  "tagline": {
+    "en": "A static gallery of small, self-contained interactive artifacts.",
+    "pt": "Uma galeria estática de pequenos artefatos interativos autônomos."
+  },
+  "description": {
+    "en": "A static gallery of small, self-contained interactive artifacts. Each one does a single thing (a simulation, a tool, a toy or a visual explainer) and you can understand it in ten seconds of playing. No backend, no API keys, no tracking: everything runs in the browser.\n\nReact 19 · TypeScript · Vite · Canvas 2D · SVG · Web Audio · WebGL2 · Vitest",
+    "pt": "Uma galeria estática de pequenos artefatos interativos autônomos. Cada um deles executa uma única função (uma simulação, uma ferramenta, um brinquedo ou uma explicação visual) e pode ser compreendido em dez segundos de uso. Sem backend, sem chaves de API, sem rastreamento: tudo é executado no navegador.\n\nReact 19 · TypeScript · Vite · Canvas 2D · SVG · Web Audio · WebGL2 · Vitest"
+  },
+  "category": "web",
+  "constellation": "taurus",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/bento-artifacts",
+  "liveUrl": "https://davipferr.github.io/bento-artifacts/",
+  "date": "2026-10-21",
+  "status": "finished"
+}

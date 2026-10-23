@@ -1,0 +1,24 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "system-canvas",
+  "title": "System Canvas",
+  "tagline": {
+    "en": "A static site for visually designing software architectures and learning System Design by simulating them.",
+    "pt": "Um site estático para projetar visualmente arquiteturas de software e aprender sobre design de sistemas por meio de simulações."
+  },
+  "description": {
+    "en": "A static site for learning and practising System Design by building architectures and watching them behave. Drop components (load balancers, services, caches, databases, queues, CDNs...) on a canvas and wire them together. Then push simulated traffic through the design to see latency, bottlenecks, failures and availability, with every number explained.\n\nIt has no backend: everything runs in the browser, and your work is saved there.",
+    "pt": "Um site estático para aprender e praticar *System Design* (projeto de sistemas) por meio da criação de arquiteturas e da observação de seu comportamento. Adicione componentes — como balanceadores de carga, serviços, caches, bancos de dados, filas, CDNs, etc. — a uma área de trabalho e conecte-os entre si. Em seguida, submeta o projeto a um tráfego simulado para visualizar latência, gargalos, falhas e disponibilidade, com cada métrica devidamente explicada.\n\nA ferramenta não possui *backend*: tudo é executado diretamente no navegador, onde o seu trabalho também é salvo."
+  },
+  "category": "web",
+  "constellation": "pisces",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/system-canvas",
+  "liveUrl": "https://davipferr.github.io/system-canvas/",
+  "date": "2026-10-19",
+  "status": "finished"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "../project.schema.json",
+  "slug": "visual-odds",
+  "title": "Visual Odds",
+  "tagline": {
+    "en": "Casino games, animated, next to the exact probabilities behind them: house edge, expected value, variance and ruin.",
+    "pt": "Jogos de cassino, apresentados de forma animada, ao lado das probabilidades exatas que os regem: vantagem da casa, valor esperado, variância e ruína."
+  },
+  "description": {
+    "en": "Casino games, animated, next to the exact probabilities behind them. Each section plays one game, runs it thousands of times with a seeded random number generator, and compares what happened with the answer from counting. There are no chart or game libraries. Everything is drawn by hand on `<canvas>` with React 19 and TypeScript.\n\nThe first version follows Basic Gambling Mathematics: The Numbers Behind the Neon by Mark Bollman. More books and topics can be added as new sections.",
+    "pt": "Jogos de cassino, com animações, apresentados lado a lado com as probabilidades exatas que os regem. Cada seção executa um jogo milhares de vezes, utilizando um gerador de números aleatórios com uma semente definida, e compara os resultados obtidos com os valores calculados matematicamente. Não são utilizadas bibliotecas de gráficos ou de jogos; todos os elementos são desenhados manualmente em um `<canvas>`, utilizando React 19 e TypeScript.\n\nA primeira versão baseia-se no livro *Basic Gambling Mathematics: The Numbers Behind the Neon*, de Mark Bollman. Outros livros e tópicos poderão ser incorporados como novas seções."
+  },
+  "category": "web",
+  "constellation": "taurus",
+  "tags": [
+    "typescript",
+    "react",
+    "vite"
+  ],
+  "repoUrl": "https://github.com/davipferr/visual-odds",
+  "date": "2026-10-20",
+  "status": "finished"
+}
