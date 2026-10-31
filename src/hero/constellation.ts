@@ -9,7 +9,23 @@ export interface ConstellationOptions {
   onSelect: (p: Project) => void;
   tooltip: (p: Project) => string;
   clusterLabel: (c: Cluster) => string;
+  /** Called after every rendered frame, e.g. to draw things that follow a star. */
+  onFrame?: () => void;
 }
+
+/** Where the camera should be: the page sets this as you scroll. */
+export interface SkyView {
+  /** Moves the sky sideways / up, as a fraction of the screen (+x right, +y up). */
+  shiftX: number;
+  shiftY: number;
+  /** Camera distance relative to the one that fits the whole sky. */
+  zoom: number;
+}
+
+/** Hover radius around a star's centre, in CSS pixels. */
+const PICK_RADIUS = 22;
+/** Seconds between two stars appearing in the opening fade-in. */
+const STAGGER = 0.07;
 
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -41,7 +57,6 @@ export class Constellation {
   /** One group per zodiac figure, turned every frame to face the camera. */
   private figureGroups: THREE.Group[] = [];
   private layout: Layout;
-  private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2(9, 9); // off-screen until the mouse moves
   private parallax = new THREE.Vector2();
   private hovered: number | null = null;
@@ -62,6 +77,17 @@ export class Constellation {
   private dimmed = new Set<number>();
   private lines!: THREE.LineSegments;
   private cleanup: (() => void)[] = [];
+  private bySlug = new Map<string, number>();
+  /** Star lit from outside the canvas (the project list). */
+  private highlighted: number | null = null;
+  /** Star the camera flies to (the open project page). */
+  private focused: number | null = null;
+  private view: SkyView = { shiftX: 0, shiftY: 0, zoom: 1 };
+  private shown: SkyView = { shiftX: 0, shiftY: 0, zoom: 1 };
+  /** Camera distance that fits the whole sky. */
+  private fitDistance = 1;
+  private camGoal = new THREE.Vector3();
+  private tmp = new THREE.Vector3();
 
   /** Throws if WebGL is unavailable; the caller shows the fallback. */
   constructor(private container: HTMLElement, projects: Project[], private opts: ConstellationOptions) {
@@ -78,9 +104,11 @@ export class Constellation {
     container.append(this.overlay);
 
     this.layout = layoutConstellation(projects);
+    this.layout.nodes.forEach((n, i) => this.bySlug.set(n.project.slug, i));
     this.scene.add(this.sky);
     this.buildStars();
     this.buildBackground();
+    this.buildNebulae();
     this.buildLabels();
     this.bindEvents();
     this.resize();
@@ -181,6 +209,41 @@ export class Constellation {
     this.scene.add(dust);
   }
 
+  /** A few faint coloured clouds far behind the stars, for depth when the camera moves. */
+  private buildNebulae() {
+    const size = 256;
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d')!;
+    // a soft lumpy cloud: overlapping radial blobs, not one perfect disc
+    let seed = 7;
+    const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 26; i++) {
+      const x = size * (0.25 + rand() * 0.5), y = size * (0.25 + rand() * 0.5), r = size * (0.12 + rand() * 0.22);
+      const grad = g.createRadialGradient(x, y, 0, x, y, r);
+      grad.addColorStop(0, 'rgba(255,255,255,0.16)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = grad;
+      g.fillRect(0, 0, size, size);
+    }
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const clouds: [number, number, number, number, string, number][] = [
+      [-38, 14, -70, 90, '#5b6cff', 0.3],
+      [42, -10, -80, 110, '#b14fd6', 0.24],
+      [6, 30, -95, 120, '#2fb8d8', 0.2],
+      [-20, -32, -60, 80, '#d6794f', 0.14],
+      [60, 28, -110, 130, '#4f7bd6', 0.2],
+    ];
+    for (const [x, y, z, scale, color, opacity] of clouds) {
+      const m = new THREE.SpriteMaterial({ map: tex, color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false });
+      const sp = new THREE.Sprite(m);
+      sp.position.set(x, y, z);
+      sp.scale.setScalar(scale);
+      this.scene.add(sp);
+    }
+  }
+
   private buildLabels() {
     for (const c of this.layout.clusters) {
       const el = document.createElement('div');
@@ -247,11 +310,61 @@ export class Constellation {
     this.cleanup.push(() => io.disconnect());
   }
 
+  /**
+   * The star nearest the pointer on screen, within PICK_RADIUS. Done in screen
+   * space rather than by raycasting the sprites: a sprite's quad is much bigger
+   * than the star you see, so in tight figures (Leo) the quads overlapped and the
+   * hover jumped between neighbours. The star already hovered gets a head start
+   * so two stars at about the same distance don't take turns.
+   */
   private pick(): number | null {
-    this.raycaster.setFromCamera(this.pointer, this.camera);
-    const targets = this.sprites.filter((_, i) => !this.dimmed.has(i));
-    const hits = this.raycaster.intersectObjects(targets, false);
-    return hits.length ? this.sprites.indexOf(hits[0].object as THREE.Sprite) : null;
+    if (Math.abs(this.pointer.x) > 1 || Math.abs(this.pointer.y) > 1) return null;
+    const w = this.container.clientWidth, h = this.container.clientHeight;
+    const px = ((this.pointer.x + 1) / 2) * w, py = ((1 - this.pointer.y) / 2) * h;
+    let best: number | null = null;
+    let bestD = PICK_RADIUS;
+    this.sprites.forEach((s, i) => {
+      if (this.dimmed.has(i)) return;
+      const v = this.tmp.setFromMatrixPosition(s.matrixWorld).project(this.camera);
+      if (v.z > 1) return;
+      let d = Math.hypot(((v.x + 1) / 2) * w - px, ((1 - v.y) / 2) * h - py);
+      if (i === this.hovered) d *= 0.6;
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    return best;
+  }
+
+  /** Light a project's star from outside, e.g. while its row in the list is hovered. */
+  highlight(slug: string | null) {
+    this.highlighted = slug === null ? null : (this.bySlug.get(slug) ?? null);
+    if (!this.running) this.frame(0);
+  }
+
+  /** Fly the camera to a project's star (null flies back out). */
+  focus(slug: string | null) {
+    this.focused = slug === null ? null : (this.bySlug.get(slug) ?? null);
+  }
+
+  setView(v: SkyView) {
+    this.view = v;
+  }
+
+  /** Where a project's star is on screen, in px relative to the sky's box. */
+  screenPosition(slug: string) {
+    const i = this.bySlug.get(slug);
+    if (i === undefined) return null;
+    const v = this.tmp.setFromMatrixPosition(this.sprites[i].matrixWorld).project(this.camera);
+    if (v.z > 1) return null;
+    return { x: ((v.x + 1) / 2) * this.container.clientWidth, y: ((1 - v.y) / 2) * this.container.clientHeight };
+  }
+
+  /** How many stars have appeared so far in the opening fade-in. */
+  appearedCount() {
+    if (reducedMotion()) return this.sprites.length;
+    return THREE.MathUtils.clamp(Math.floor((this.elapsed - 0.3) / STAGGER) + 1, 0, this.sprites.length);
   }
 
   /** Fade out the projects that don't pass `match` (null shows all). */
@@ -275,10 +388,10 @@ export class Constellation {
     const vfov = THREE.MathUtils.degToRad(this.camera.fov);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.camera.aspect);
     // 0.85: the sky is never edge-on in every direction at once, so a slightly closer camera still fits.
-    const distance = (this.layout.extent / Math.sin(Math.min(vfov, hfov) / 2)) * 0.85;
-    this.camera.position.set(0, 0, distance);
-    this.starScale = distance * 0.06 * (h / Math.max(h, 700));
-    this.camera.updateProjectionMatrix();
+    const distance = (this.fitDistance = (this.layout.extent / Math.sin(Math.min(vfov, hfov) / 2)) * 0.85);
+    // smaller stars on narrow screens, where the sky is packed tighter
+    this.starScale = distance * 0.06 * (h / Math.max(h, 700)) * Math.min(1, Math.max(w, 450) / 900);
+    this.moveCamera(1);
     if (!this.running) this.render();
   }
 
@@ -307,10 +420,33 @@ export class Constellation {
     }
   }
 
+  /**
+   * Ease the camera towards where the page wants it: shifted and zoomed by the
+   * scroll position, or right in front of the focused star. `k` = 1 snaps.
+   */
+  private moveCamera(k: number) {
+    const w = this.container.clientWidth, h = this.container.clientHeight;
+    if (!w || !h) return;
+    const s = this.shown, v = this.view;
+    s.shiftX += (v.shiftX - s.shiftX) * k;
+    s.shiftY += (v.shiftY - s.shiftY) * k;
+    s.zoom += (v.zoom - s.zoom) * k;
+    this.camera.setViewOffset(w, h, -s.shiftX * w, s.shiftY * h, w, h);
+
+    if (this.focused !== null) {
+      this.sprites[this.focused].getWorldPosition(this.camGoal);
+      this.camGoal.z += this.fitDistance * 0.34;
+    } else this.camGoal.set(0, 0, this.fitDistance * s.zoom);
+    this.camera.position.lerp(this.camGoal, k);
+    this.camera.updateProjectionMatrix();
+  }
+
   private frame(dt: number) {
     const still = reducedMotion();
     this.elapsed += dt;
-    if (!still && !this.drag) this.spin += dt * 0.04;
+    // hold still while a star is pointed at or open, so it doesn't drift away
+    if (!still && !this.drag && this.hovered === null && this.focused === null) this.spin += dt * 0.04;
+    this.moveCamera(still ? 1 : 1 - Math.exp(-dt * 2.6));
 
     this.sky.rotation.set(this.tilt + this.parallax.y * -0.08, this.spin + this.parallax.x * 0.15, 0);
     // undo the sky's rotation so zodiac figures face the camera (which looks straight down -z)
@@ -326,17 +462,20 @@ export class Constellation {
       if (hit !== null) this.tooltipEl.innerHTML = this.opts.tooltip(this.layout.nodes[hit].project);
     }
 
+    // Closer camera, smaller sprites: zoomed in, stars still grow, just not as fast as the distance shrinks.
+    const near = Math.sqrt(this.camera.position.z / this.fitDistance);
+    const lit = this.hovered ?? this.highlighted ?? this.focused;
     this.sprites.forEach((s, i) => {
       // fade in one by one on first load
-      const appear = still ? 1 : THREE.MathUtils.smoothstep(this.elapsed, i * 0.08, i * 0.08 + 0.8);
+      const appear = still ? 1 : THREE.MathUtils.smoothstep(this.elapsed, 0.3 + i * STAGGER, 0.3 + i * STAGGER + 0.8);
       const pulse = still ? 1 : 1 + Math.sin(this.elapsed * 1.6 + s.userData.phase) * 0.08;
       const dim = this.dimmed.has(i);
-      const focus = i === this.hovered ? 1.45 : dim ? 0.7 : 1;
-      s.scale.setScalar(this.starScale * s.userData.base * appear * pulse * focus);
-      (s.material as THREE.SpriteMaterial).opacity = dim ? 0.12 : this.hovered === null || i === this.hovered ? 1 : 0.45;
+      const focus = i === lit ? 1.6 : dim ? 0.7 : 1;
+      s.scale.setScalar(this.starScale * near * s.userData.base * appear * pulse * focus);
+      (s.material as THREE.SpriteMaterial).opacity = dim ? 0.12 : lit === null || i === lit ? 1 : 0.4;
     });
 
-    for (const g of this.ghosts) g.scale.setScalar(this.starScale * 0.45);
+    for (const g of this.ghosts) g.scale.setScalar(this.starScale * near * 0.45);
 
     this.render();
   }
@@ -344,6 +483,7 @@ export class Constellation {
   private render() {
     this.renderer.render(this.scene, this.camera);
     this.sky.updateMatrixWorld();
+    this.opts.onFrame?.();
     const w = this.container.clientWidth, h = this.container.clientHeight;
     const v = new THREE.Vector3();
     /** Screen position of a point given in `parent`'s local space. */
