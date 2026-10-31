@@ -220,16 +220,49 @@ header.addEventListener('click', (e) => {
 });
 
 // Pointing at a project in the list lights its star and draws a line to it.
-function point(e: Event) {
-  const row = (e.target as HTMLElement).closest<HTMLElement>('[data-slug]');
-  const slug = e.type === 'mouseover' || e.type === 'focusin' ? (row?.dataset.slug ?? null) : null;
+function setPointed(slug: string | null) {
   if (slug === pointed) return;
   pointed = slug;
   constellation?.highlight(slug);
 }
+function point(e: Event) {
+  const row = (e.target as HTMLElement).closest<HTMLElement>('[data-slug]');
+  setPointed(e.type === 'mouseover' || e.type === 'focusin' ? (row?.dataset.slug ?? null) : null);
+}
 for (const type of ['mouseover', 'mouseout', 'focusin', 'focusout']) view.addEventListener(type, point);
 
-addEventListener('scroll', updateSky, { passive: true });
+// Scrolling slides the page under a mouse that isn't moving, and the browser
+// sends no mouseover for that (or sends it late). So remember where the mouse
+// is and, after each scroll, ask what is under it now: a row in the list, the
+// sky, or neither.
+let mouse: { x: number; y: number } | null = null;
+addEventListener('mousemove', (e) => (mouse = { x: e.clientX, y: e.clientY }), { passive: true });
+document.documentElement.addEventListener('mouseleave', () => {
+  mouse = null;
+  setPointed(null);
+  constellation?.pointAt(null);
+});
+let syncQueued = false;
+function syncPointer() {
+  syncQueued = false;
+  if (!mouse) return;
+  const el = document.elementFromPoint(mouse.x, mouse.y);
+  const row = el?.closest<HTMLElement>('[data-slug]');
+  setPointed(row?.dataset.slug ?? null);
+  constellation?.pointAt(el && skyCanvas.contains(el) ? mouse : null);
+}
+
+addEventListener(
+  'scroll',
+  () => {
+    updateSky();
+    if (!syncQueued) {
+      syncQueued = true;
+      requestAnimationFrame(syncPointer);
+    }
+  },
+  { passive: true },
+);
 addEventListener('resize', updateSky);
 
 // Clicking a link to the hash we're already on fires no hashchange; still scroll.

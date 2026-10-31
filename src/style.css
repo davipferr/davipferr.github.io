@@ -74,6 +74,8 @@ main, .site-footer { position: relative; z-index: 1; }
 .sky-canvas { position: absolute; inset: 0; }
 .sky-canvas canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: grab; }
 .sky-canvas canvas:active { cursor: grabbing; }
+/* with a project open the sky is held still: nothing to grab */
+.on-project .sky-canvas canvas, .on-project .sky-canvas canvas:active { cursor: default; }
 /* Veils: one darkens the left where the list sits, the other the whole sky behind long text. */
 .sky-view::before, .sky-view::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 4; }
 .sky-view::before {

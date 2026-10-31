@@ -22,6 +22,8 @@ export interface SkyView {
   zoom: number;
 }
 
+const ORIGIN = new THREE.Vector2();
+
 /** Hover radius around a star's centre, in CSS pixels. */
 const PICK_RADIUS = 22;
 /** Seconds between two stars appearing in the opening fade-in. */
@@ -59,6 +61,8 @@ export class Constellation {
   private layout: Layout;
   private pointer = new THREE.Vector2(9, 9); // off-screen until the mouse moves
   private parallax = new THREE.Vector2();
+  /** `parallax`, eased: what actually tilts the sky. */
+  private lean = new THREE.Vector2();
   private hovered: number | null = null;
   private labels: HTMLElement[] = [];
   private tooltipEl: HTMLElement;
@@ -275,7 +279,10 @@ export class Constellation {
 
     on(canvas, 'pointermove', (e) => {
       setPointer(e);
-      if (this.drag) {
+      // while a project is open the sky holds still; a press only counts as a click
+      if (this.drag && this.focused !== null) {
+        if (Math.hypot(e.clientX - this.drag.x, e.clientY - this.drag.y) > 5) this.drag.moved = true;
+      } else if (this.drag) {
         const dx = e.clientX - this.drag.x, dy = e.clientY - this.drag.y;
         if (Math.hypot(dx, dy) > 5) this.drag.moved = true;
         this.spin = this.drag.spin + dx * 0.005;
@@ -295,10 +302,7 @@ export class Constellation {
       const hit = this.pick();
       if (hit !== null) this.opts.onSelect(this.layout.nodes[hit].project);
     });
-    on(canvas, 'pointerleave', () => {
-      this.pointer.set(9, 9);
-      this.parallax.set(0, 0);
-    });
+    on(canvas, 'pointerleave', () => this.pointAt(null));
 
     on(window, 'resize', () => this.resize());
     on(document, 'visibilitychange', () => this.updateLoop());
@@ -335,6 +339,22 @@ export class Constellation {
       }
     });
     return best;
+  }
+
+  /**
+   * Tell the sky where the mouse is (viewport px), or null when it isn't over
+   * the sky. Needed because scrolling slides the page over a still mouse
+   * without any pointer event reaching the canvas.
+   */
+  pointAt(p: { x: number; y: number } | null) {
+    if (!p) {
+      this.pointer.set(9, 9);
+      this.parallax.set(0, 0);
+      return;
+    }
+    const r = this.renderer.domElement.getBoundingClientRect();
+    this.pointer.set(((p.x - r.left) / r.width) * 2 - 1, -((p.y - r.top) / r.height) * 2 + 1);
+    this.parallax.copy(this.pointer);
   }
 
   /** Light a project's star from outside, e.g. while its row in the list is hovered. */
@@ -447,8 +467,10 @@ export class Constellation {
     // hold still while a star is pointed at or open, so it doesn't drift away
     if (!still && !this.drag && this.hovered === null && this.focused === null) this.spin += dt * 0.04;
     this.moveCamera(still ? 1 : 1 - Math.exp(-dt * 2.6));
+    // the sky leans toward the mouse, eased; with a project open it settles and stays put
+    this.lean.lerp(this.focused === null ? this.parallax : ORIGIN, still ? 1 : 1 - Math.exp(-dt * 5));
 
-    this.sky.rotation.set(this.tilt + this.parallax.y * -0.08, this.spin + this.parallax.x * 0.15, 0);
+    this.sky.rotation.set(this.tilt + this.lean.y * -0.08, this.spin + this.lean.x * 0.15, 0);
     // undo the sky's rotation so zodiac figures face the camera (which looks straight down -z)
     const facing = this.sky.quaternion.clone().invert();
     for (const g of this.figureGroups) g.quaternion.copy(facing);
