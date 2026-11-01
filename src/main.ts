@@ -75,6 +75,7 @@ function ensureConstellation() {
       tooltip: (p) => `<strong>${esc(p.title)}</strong><span>${esc(tr(p.tagline))}</span>`,
       clusterLabel: (c) => (c.kind === 'zodiac' ? tr(zodiacById(c.id)!.name) : categoryLabel(c.id as Category)),
       onFrame: skyFrame,
+      avoid: skyObstacles,
     });
     document.body.prepend(skyView);
     document.body.append(leader);
@@ -85,6 +86,25 @@ function ensureConstellation() {
     console.warn('WebGL unavailable, showing the catalogue only.', err);
     webgl = false;
   }
+}
+
+/**
+ * What the sky's labels keep clear of: the header, and in the hero the lines
+ * of text and the buttons (not their block boxes, which run far past the words).
+ */
+function skyObstacles() {
+  const boxes = [header.getBoundingClientRect()];
+  if (hero.hidden) return boxes;
+  const range = document.createRange();
+  for (const el of heroCopy.children) {
+    if (el.classList.contains('hero-actions')) {
+      for (const btn of el.children) boxes.push(btn.getBoundingClientRect());
+    } else {
+      range.selectNodeContents(el);
+      boxes.push(...range.getClientRects());
+    }
+  }
+  return boxes;
 }
 
 /** Runs after every sky frame: the opening star counter and the leader line. */

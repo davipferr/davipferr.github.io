@@ -87,8 +87,11 @@ main, .site-footer { position: relative; z-index: 1; }
 .sky-label {
   position: absolute; left: 0; top: 0; white-space: nowrap;
   font: italic 400 0.98rem var(--font-display); color: rgba(238, 241, 251, 0.5);
+  transition: opacity 0.3s;
 }
 .sky-label-zodiac { color: rgba(226, 183, 101, 0.78); font-size: 1.15rem; }
+/* a label that would sit on the page's text or header steps aside */
+.sky-label.covered { opacity: 0 !important; }
 .sky-tooltip {
   position: absolute; left: 0; top: 0; max-width: 280px; padding: 10px 14px;
   background: rgba(18, 26, 60, 0.94); border: 1px solid var(--graticule); border-left: 2px solid var(--brass);

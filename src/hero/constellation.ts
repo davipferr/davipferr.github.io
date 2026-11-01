@@ -11,7 +11,13 @@ export interface ConstellationOptions {
   clusterLabel: (c: Cluster) => string;
   /** Called after every rendered frame, e.g. to draw things that follow a star. */
   onFrame?: () => void;
+  /** Boxes (viewport px) that sky labels must not sit on, e.g. the page's text; a label over one fades out. */
+  avoid?: () => Iterable<DOMRect>;
 }
+
+interface Pulse { sprite: THREE.Sprite; from: THREE.Vector3; to: THREE.Vector3; t: number; dur: number; wait: number }
+/** A line a pulse can run along, in `parent`'s space, between project stars `ends`. */
+interface Route { parent: THREE.Object3D; a: THREE.Vector3; b: THREE.Vector3; ends: [number, number]; color: THREE.Color }
 
 /** Where the camera should be: the page sets this as you scroll. */
 export interface SkyView {
@@ -92,6 +98,10 @@ export class Constellation {
   private fitDistance = 1;
   private camGoal = new THREE.Vector3();
   private tmp = new THREE.Vector3();
+  private dust!: THREE.ShaderMaterial;
+  private routes: Route[] = [];
+  private pulses: Pulse[] = [];
+  private meteor = { mesh: null as THREE.Mesh | null, t: -1, wait: 5, from: new THREE.Vector3(), dir: new THREE.Vector3(), dist: 0, len: 0 };
 
   /** Throws if WebGL is unavailable; the caller shows the fallback. */
   constructor(private container: HTMLElement, projects: Project[], private opts: ConstellationOptions) {
@@ -113,6 +123,7 @@ export class Constellation {
     this.buildStars();
     this.buildBackground();
     this.buildNebulae();
+    this.buildMeteor();
     this.buildLabels();
     this.bindEvents();
     this.resize();
@@ -155,6 +166,7 @@ export class Constellation {
     ));
     this.sky.add(lines);
     this.buildFigures(tex);
+    this.buildPulses(tex);
   }
 
   /**
@@ -199,18 +211,213 @@ export class Constellation {
     }
   }
 
+  /**
+   * Faint background stars: round, of different sizes and colours, each
+   * twinkling at its own pace. Drawn by a shader so 1400 of them cost one draw call.
+   */
   private buildBackground() {
     const n = 1400;
     const pos = new Float32Array(n * 3);
+    const size = new Float32Array(n);
+    const tint = new Float32Array(n * 3);
+    const phase = new Float32Array(n);
+    // mostly cool white, some blue, a few warm and violet ones
+    const palette = [0xc8d6f0, 0xc8d6f0, 0x9fb6ff, 0x8fd3ff, 0xffe2b8, 0xc7b4ff].map((c) => new THREE.Color(c));
     for (let i = 0; i < n; i++) {
       const u = Math.random() * 2 - 1, phi = Math.random() * Math.PI * 2, r = 60 + Math.random() * 80;
       const s = Math.sqrt(1 - u * u);
       pos.set([r * s * Math.cos(phi), r * u, r * s * Math.sin(phi)], i * 3);
+      // most are specks, a handful are noticeably bright
+      size[i] = 0.55 + Math.pow(Math.random(), 6) * 1.6;
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      tint.set([c.r, c.g, c.b], i * 3);
+      phase[i] = Math.random() * Math.PI * 2;
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const dust = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0x8090b0, size: 0.35, transparent: true, opacity: 0.55, depthWrite: false }));
-    this.scene.add(dust);
+    geo.setAttribute('aSize', new THREE.BufferAttribute(size, 1));
+    geo.setAttribute('aTint', new THREE.BufferAttribute(tint, 3));
+    geo.setAttribute('aPhase', new THREE.BufferAttribute(phase, 1));
+    this.dust = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uScale: { value: 1 } },
+      vertexShader: /* glsl */ `
+        uniform float uTime;
+        uniform float uScale;
+        attribute float aSize;
+        attribute vec3 aTint;
+        attribute float aPhase;
+        varying vec3 vTint;
+        varying float vAlpha;
+
+        void main() {
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          // two sines at unrelated rates, so the twinkle never looks like a loop
+          float rate = 0.5 + fract(aPhase * 3.17) * 1.6;
+          float twinkle = 0.6 + 0.4 * sin(uTime * rate + aPhase) * sin(uTime * 0.31 + aPhase * 1.7);
+          float px = aSize * uScale / -mv.z;
+          // a point under ~1.5px flickers as it moves: keep it that big and dim it instead
+          vAlpha = twinkle * min(1.0, px / 1.5);
+          gl_PointSize = max(px, 1.5);
+          vTint = aTint;
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        varying vec3 vTint;
+        varying float vAlpha;
+
+        void main() {
+          float d = length(gl_PointCoord - 0.5) * 2.0;
+          float halo = smoothstep(1.0, 0.0, d);
+          halo *= halo;
+          float core = smoothstep(0.3, 0.0, d);
+          gl_FragColor = vec4(vTint * (halo * 0.7 + core), halo * vAlpha * 0.8);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    this.scene.add(new THREE.Points(geo, this.dust));
+  }
+
+  /**
+   * Little sparks that run along the lines between stars now and then, so the
+   * sky reads as connected. Only lines between project stars, never to ghosts.
+   */
+  private buildPulses(tex: THREE.Texture) {
+    const v = (p: readonly number[]) => new THREE.Vector3(p[0], p[1], p[2]);
+    for (const [i, j] of this.layout.edges) {
+      const a = this.layout.nodes[i], b = this.layout.nodes[j];
+      this.routes.push({ parent: this.sky, a: v(a.position), b: v(b.position), ends: [i, j], color: new THREE.Color(a.color).lerp(new THREE.Color(b.color), 0.5) });
+    }
+    this.layout.figures.forEach((fig, f) => {
+      for (const [a, b] of fig.zodiac.lines) {
+        const i = fig.occupant[a], j = fig.occupant[b];
+        if (i < 0 || j < 0) continue;
+        this.routes.push({ parent: this.figureGroups[f], a: v(fig.offsets[a]), b: v(fig.offsets[b]), ends: [i, j], color: new THREE.Color(0xe8eeff) });
+      }
+    });
+    if (!this.routes.length) return;
+    for (let k = 0; k < 5; k++) {
+      const mat = new THREE.SpriteMaterial({ map: tex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0 });
+      const sprite = new THREE.Sprite(mat);
+      sprite.visible = false;
+      this.sky.add(sprite);
+      // staggered so they don't all set off together
+      this.pulses.push({ sprite, from: new THREE.Vector3(), to: new THREE.Vector3(), t: 1, dur: 1, wait: 1.5 + k * 1.3 });
+    }
+  }
+
+  private launchPulse(p: Pulse) {
+    const open = this.routes.filter((r) => !this.dimmed.has(r.ends[0]) && !this.dimmed.has(r.ends[1]));
+    if (!open.length) {
+      p.wait = 2;
+      return;
+    }
+    const r = open[Math.floor(Math.random() * open.length)];
+    const flip = Math.random() < 0.5;
+    p.from.copy(flip ? r.b : r.a);
+    p.to.copy(flip ? r.a : r.b);
+    r.parent.add(p.sprite);
+    (p.sprite.material as THREE.SpriteMaterial).color.copy(r.color);
+    p.t = 0;
+    p.dur = 0.9 + p.from.distanceTo(p.to) * 0.18;
+  }
+
+  private updatePulses(dt: number, size: number, calm: boolean) {
+    for (const p of this.pulses) {
+      if (calm) {
+        p.sprite.visible = false;
+        continue;
+      }
+      if (p.t >= 1) {
+        p.sprite.visible = false;
+        p.wait -= dt;
+        if (p.wait > 0) continue;
+        this.launchPulse(p);
+        if (p.t >= 1) continue;
+      }
+      p.t = Math.min(1, p.t + dt / p.dur);
+      if (p.t >= 1) p.wait = 1.5 + Math.random() * 4;
+      const e = p.t * p.t * (3 - 2 * p.t);
+      p.sprite.position.lerpVectors(p.from, p.to, e);
+      p.sprite.scale.setScalar(size);
+      (p.sprite.material as THREE.SpriteMaterial).opacity = Math.sin(Math.PI * p.t) * 0.9;
+      p.sprite.visible = true;
+    }
+  }
+
+  /** A streak of light: the bright head at the origin, the tail fading off along -x. */
+  private buildMeteor() {
+    const c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 16;
+    const g = c.getContext('2d')!;
+    const along = g.createLinearGradient(0, 0, 256, 0);
+    along.addColorStop(0, 'rgba(255,255,255,0)');
+    along.addColorStop(0.85, 'rgba(255,255,255,0.55)');
+    along.addColorStop(1, 'rgba(255,255,255,1)');
+    g.fillStyle = along;
+    g.fillRect(0, 0, 256, 16);
+    // thin it towards the edges
+    g.globalCompositeOperation = 'destination-in';
+    const across = g.createLinearGradient(0, 0, 0, 16);
+    across.addColorStop(0, 'rgba(0,0,0,0)');
+    across.addColorStop(0.5, 'rgba(0,0,0,1)');
+    across.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = across;
+    g.fillRect(0, 0, 256, 16);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const geo = new THREE.PlaneGeometry(1, 1).translate(-0.5, 0, 0);
+    this.meteor.mesh = new THREE.Mesh(
+      geo,
+      new THREE.MeshBasicMaterial({ map: tex, color: 0xe4ecff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }),
+    );
+    this.meteor.mesh.visible = false;
+    this.meteor.mesh.frustumCulled = false;
+    this.scene.add(this.meteor.mesh);
+  }
+
+  /** Now and then a shooting star crosses the visible part of the sky, behind the stars. */
+  private updateMeteor(dt: number, calm: boolean) {
+    const m = this.meteor;
+    const mesh = m.mesh!;
+    if (m.t < 0) {
+      mesh.visible = false;
+      m.wait -= dt;
+      if (m.wait > 0 || calm) return;
+      // what the camera sees at the meteor's depth, with the page's sideways shift
+      const z = -45;
+      const halfH = (this.camera.position.z - z) * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+      const halfW = halfH * this.camera.aspect;
+      const cx = this.camera.position.x - this.shown.shiftX * 2 * halfW;
+      const cy = this.camera.position.y - this.shown.shiftY * 2 * halfH;
+      const right = Math.random() < 0.5 ? 1 : -1;
+      const angle = 0.25 + Math.random() * 0.35;
+      m.dir.set(right * Math.cos(angle), -Math.sin(angle), 0);
+      // keep to the right half, away from the hero copy: rightward ones start mid-screen, leftward ones near the right edge
+      m.from.set(cx + (right > 0 ? -0.2 + Math.random() * 0.4 : 0.5 + Math.random() * 0.4) * halfW, cy + (0.2 + Math.random() * 0.6) * halfH, z);
+      m.dist = halfW * (0.4 + Math.random() * 0.2);
+      m.len = halfW * 0.28;
+      mesh.rotation.z = Math.atan2(m.dir.y, m.dir.x);
+      m.t = 0;
+    }
+    m.t += dt / 1.1;
+    if (m.t >= 1 || calm) {
+      m.t = -1;
+      m.wait = 8 + Math.random() * 10;
+      mesh.visible = false;
+      return;
+    }
+    const e = 1 - (1 - m.t) * (1 - m.t); // fast start, slowing as it burns out
+    mesh.position.copy(m.from).addScaledVector(m.dir, m.dist * e);
+    mesh.scale.set(m.len * Math.min(1, m.t * 4), m.len * 0.035, 1);
+    (mesh.material as THREE.MeshBasicMaterial).opacity = Math.sin(Math.PI * Math.min(1, m.t * 1.15)) * 0.85;
+    mesh.visible = true;
   }
 
   /** A few faint coloured clouds far behind the stars, for depth when the camera moves. */
@@ -403,6 +610,8 @@ export class Constellation {
     const w = this.container.clientWidth, h = this.container.clientHeight;
     if (!w || !h) return;
     this.renderer.setSize(w, h, false);
+    // gl_PointSize is in device pixels: the same scale PointsMaterial uses for size attenuation
+    this.dust.uniforms.uScale.value = (h * this.renderer.getPixelRatio()) / 2;
     this.camera.aspect = w / h;
     // Fit the whole sky, using whichever field of view is narrower.
     const vfov = THREE.MathUtils.degToRad(this.camera.fov);
@@ -499,6 +708,12 @@ export class Constellation {
 
     for (const g of this.ghosts) g.scale.setScalar(this.starScale * near * 0.45);
 
+    if (!still) this.dust.uniforms.uTime.value = this.elapsed;
+    // the extras rest while a project is open, and wait for the opening fade-in
+    const calm = still || this.focused !== null || this.appearedCount() < this.sprites.length;
+    this.updatePulses(dt, this.starScale * near * 0.32, calm);
+    this.updateMeteor(dt, calm);
+
     this.render();
   }
 
@@ -513,12 +728,23 @@ export class Constellation {
       v.copy(p).applyMatrix4(parent.matrixWorld).project(this.camera);
       return { x: (v.x + 1) / 2 * w, y: (1 - v.y) / 2 * h, front: v.z < 1 };
     };
+    // the page's text and header, in the overlay's coordinates
+    const box = this.container.getBoundingClientRect();
+    const blocks: DOMRect[] = [];
+    for (const r of this.opts.avoid?.() ?? []) {
+      if (r.width && r.bottom > box.top && r.top < box.bottom) blocks.push(new DOMRect(r.x - box.x, r.y - box.y, r.width, r.height));
+    }
+    const PAD = 10;
     this.layout.clusters.forEach((c, i) => {
       const s =
         c.figure === undefined
           ? toScreen(new THREE.Vector3(...c.label))
           : toScreen(new THREE.Vector3(0, c.label[1] - this.layout.figures[c.figure].center[1], 0), this.figureGroups[c.figure]);
-      this.labels[i].style.transform = `translate(${s.x}px, ${s.y}px) translate(-50%, -100%)`;
+      const el = this.labels[i];
+      el.style.transform = `translate(${s.x}px, ${s.y}px) translate(-50%, -100%)`;
+      const half = el.offsetWidth / 2, top = s.y - el.offsetHeight;
+      const covered = blocks.some((b) => s.x + half > b.left - PAD && s.x - half < b.right + PAD && s.y > b.top - PAD && top < b.bottom + PAD);
+      el.classList.toggle('covered', covered);
     });
     if (this.hovered !== null) {
       const sprite = this.sprites[this.hovered];
